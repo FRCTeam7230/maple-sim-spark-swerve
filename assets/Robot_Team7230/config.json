@@ -1,0 +1,55 @@
+{
+  "name": "Team7230",
+  "sourceUrl": "https://cad.onshape.com/documents/1da7a0cba5b34a9ab1d78aff/w/b6d96964ac88a41d894983ae/e/5286014a8027af5f245899a4",
+  "rotations": [
+    {
+      "axis": "x",
+      "degrees": 90
+    },
+    {
+      "axis": "z",
+      "degrees": 90
+    }
+  ],
+  "position": [
+    0,
+    0,
+    0
+  ],
+  "cameras": [
+    {
+      "name": "Front Camera",
+      "rotations": [],
+      "position": [
+        0.35,
+        0,
+        0.5
+      ],
+      "resolution": [
+        960,
+        720
+      ],
+      "fov": 90
+    },
+    {
+      "name": "Back Camera",
+      "rotations": [
+        {
+          "axis": "z",
+          "degrees": 180
+        }
+      ],
+      "position": [
+        -0.35,
+        0,
+        0.5
+      ],
+      "resolution": [
+        960,
+        720
+      ],
+      "fov": 90
+    }
+  ],
+  "components": []
+}
