@@ -7,25 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "rush first pp"
+            "pathName": "rush first"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "rush second pp"
+            "pathName": "rush second"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "rush third pp"
+            "pathName": "rush third"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "rush fourth and shoot pp"
+            "pathName": "rush fourth and shoot"
           }
         }
       ]
@@ -33,5 +33,5 @@
   },
   "resetOdom": true,
   "folder": null,
-  "choreoAuto": false
+  "choreoAuto": true
 }
