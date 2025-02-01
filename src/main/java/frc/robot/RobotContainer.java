@@ -13,12 +13,19 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -34,6 +41,10 @@ import frc.robot.util.AIRobotInSimulation;
 
 import org.ironmaple.simulation.SimulatedArena;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnField;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnFly;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnField;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnFly;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
@@ -88,6 +99,8 @@ public class RobotContainer {
                         new ModuleIOSim(driveSimulation.getModules()[2]),
                         new ModuleIOSim(driveSimulation.getModules()[3]),
                         driveSimulation::setSimulationWorldPose);
+
+                drive.driveSimulation = driveSimulation;
 
                 vision = new Vision(
                         drive,
@@ -149,6 +162,12 @@ public class RobotContainer {
 
         // Switch to X pattern when X button is pressed
         new JoystickButton(controller, 4).onTrue(Commands.runOnce(drive::stopWithX, drive));
+
+        new JoystickButton(controller, 1).onTrue(Commands.runOnce(drive::scoreAlgae, drive));
+        new JoystickButton(controller, 2).onTrue(Commands.runOnce(drive::scoreCoral, drive));
+        new JoystickButton(controller, 5).onTrue(Commands.runOnce(drive::spawnAlgae, drive));
+        new JoystickButton(controller, 6).onTrue(Commands.runOnce(drive::spawnCoral, drive));
+
 
         // Reset gyro / odometry
         final Runnable resetGyro = Constants.currentMode == Constants.Mode.SIM

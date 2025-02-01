@@ -27,7 +27,9 @@ import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -49,6 +51,14 @@ import frc.robot.util.LocalADStarAK;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
+
+import org.ironmaple.simulation.IntakeSimulation;
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnField;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnFly;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnField;
+import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnFly;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -73,6 +83,8 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
     private final SwerveDrivePoseEstimator poseEstimator =
             new SwerveDrivePoseEstimator(kinematics, rawGyroRotation, lastModulePositions, new Pose2d());
     private final Consumer<Pose2d> resetSimulationPoseCallBack;
+
+    public SwerveDriveSimulation driveSimulation;
 
     public Drive(
             GyroIO gyroIO,
@@ -309,4 +321,66 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
     public double getMaxAngularSpeedRadPerSec() {
         return maxSpeedMetersPerSec / driveBaseRadius;
     }
+
+    public void spawnAlgae() {
+        SimulatedArena.getInstance().addGamePiece(new ReefscapeAlgaeOnField(driveSimulation.getSimulatedDriveTrainPose().getTranslation()));
+    }
+
+    public void scoreAlgae() {
+        ReefscapeAlgaeOnFly.setHitNetCallBack(() -> System.out.println("ALGAE hits NET!"));
+        SimulatedArena.getInstance()
+            .addGamePieceProjectile(new ReefscapeAlgaeOnFly(
+                driveSimulation.getSimulatedDriveTrainPose().getTranslation(),
+                new Translation2d(),
+                driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
+                driveSimulation.getSimulatedDriveTrainPose().getRotation(),
+                Meters.of(0.4),
+                MetersPerSecond.of(9),
+                Degrees.of(70)) // shooter angle
+                .withProjectileTrajectoryDisplayCallBack(
+                    (poses) -> Logger.recordOutput("successfulShotsTrajectory", poses.toArray(Pose3d[]::new)),
+                    (poses) -> Logger.recordOutput("missedShotsTrajectory", poses.toArray(Pose3d[]::new))));
+    }
+
+    public void spawnCoral() {
+        SimulatedArena.getInstance().addGamePiece(new ReefscapeCoralOnField(
+            // We must specify a heading since the coral is a tube
+            driveSimulation.getSimulatedDriveTrainPose()));
+    }
+
+    public void scoreCoral() {
+        SimulatedArena.getInstance()
+        .addGamePieceProjectile(new ReefscapeCoralOnFly(
+                // Obtain robot position from drive simulation
+                driveSimulation.getSimulatedDriveTrainPose().getTranslation(),
+                // The scoring mechanism is installed at (0.46, 0) (meters) on the robot
+                new Translation2d(0.46, 0),
+                // Obtain robot speed from drive simulation
+                driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
+                // Obtain robot facing from drive simulation
+                driveSimulation.getSimulatedDriveTrainPose().getRotation(),
+                // The height at which the coral is ejected
+                Meters.of(2.1),
+                // The initial speed of the coral
+                MetersPerSecond.of(1),
+                // The coral is ejected vertically downwards
+                Degrees.of(-90)));
+    }
+/*
+    public void intakeCoral() {
+        this.intakeSimulation = IntakeSimulation.OverTheBumperIntake(
+                // Specify the type of game pieces that the intake can collect
+                "Coral",
+                // Specify the drivetrain to which this intake is attached
+                driveTrainSimulation,
+                // Width of the intake
+                Meters.of(0.4),
+                // The extension length of the intake beyond the robot's frame (when activated)
+                Meters.of(0.2),
+                // The intake is mounted on the back side of the chassis
+                IntakeSimulation.IntakeSide.BACK,
+                // The intake can hold up to 1 note
+        1);
+    }
+*/
 }
