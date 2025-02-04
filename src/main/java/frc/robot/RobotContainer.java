@@ -31,11 +31,13 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.drive.*;
+import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.vision.*;
 import frc.robot.util.AIRobotInSimulation;
 
@@ -59,6 +61,9 @@ public class RobotContainer {
     private final Drive drive;
     private final Vision vision;
     private SwerveDriveSimulation driveSimulation = null;
+
+    private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+
 
     // Controller
     private final Joystick controller = new Joystick(0);
@@ -86,6 +91,8 @@ public class RobotContainer {
 
                 break;
             case SIM:
+                m_elevator.setGoal(0);
+
                 // create a maple-sim swerve drive simulation instance
                 this.driveSimulation =
                         new SwerveDriveSimulation(DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
@@ -165,9 +172,22 @@ public class RobotContainer {
 
         new JoystickButton(controller, 1).onTrue(Commands.runOnce(drive::scoreAlgae, drive));
         new JoystickButton(controller, 2).onTrue(Commands.runOnce(drive::scoreCoral, drive));
+/*
         new JoystickButton(controller, 5).onTrue(Commands.runOnce(drive::spawnAlgae, drive));
         new JoystickButton(controller, 6).onTrue(Commands.runOnce(drive::spawnCoral, drive));
+        new JoystickButton(controller, 7).onTrue(Commands.runOnce(drive::intakeCoralStart, drive));
+        new JoystickButton(controller, 8).onTrue(Commands.runOnce(drive::intakeCoralStop, drive));
+*/
 
+        new JoystickButton(controller, 7)
+                .whileTrue(new RunCommand(
+                () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMinElevatorHeightMeters),
+                m_elevator));
+
+        new JoystickButton(controller, 8)
+                .whileTrue(new RunCommand(
+                () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxElevatorHeightMeters),
+                m_elevator));
 
         // Reset gyro / odometry
         final Runnable resetGyro = Constants.currentMode == Constants.Mode.SIM

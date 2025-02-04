@@ -85,7 +85,8 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
     private final Consumer<Pose2d> resetSimulationPoseCallBack;
 
     public SwerveDriveSimulation driveSimulation;
-
+    private IntakeSimulation intakeSimulation;
+    
     public Drive(
             GyroIO gyroIO,
             ModuleIO flModuleIO,
@@ -366,21 +367,59 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
                 // The coral is ejected vertically downwards
                 Degrees.of(-90)));
     }
-/*
-    public void intakeCoral() {
+
+    public void intakeCoralStart() {
         this.intakeSimulation = IntakeSimulation.OverTheBumperIntake(
-                // Specify the type of game pieces that the intake can collect
-                "Coral",
-                // Specify the drivetrain to which this intake is attached
-                driveTrainSimulation,
-                // Width of the intake
-                Meters.of(0.4),
-                // The extension length of the intake beyond the robot's frame (when activated)
-                Meters.of(0.2),
-                // The intake is mounted on the back side of the chassis
-                IntakeSimulation.IntakeSide.BACK,
-                // The intake can hold up to 1 note
-        1);
+            // Specify the type of game pieces that the intake can collect
+            "Coral",
+            // Specify the drivetrain to which this intake is attached
+            driveSimulation,
+            // Width of the intake
+            Meters.of(0.4),
+            // The extension length of the intake beyond the robot's frame (when activated)
+            Meters.of(0.2),
+            // The intake is mounted on the back side of the chassis
+            IntakeSimulation.IntakeSide.FRONT,
+            // The intake can hold up to 1 note
+    1);
+    
+        this.intakeSimulation.startIntake();
+    }
+
+    public void intakeCoralStop() {
+        this.intakeSimulation = IntakeSimulation.OverTheBumperIntake(
+            // Specify the type of game pieces that the intake can collect
+            "Coral",
+            // Specify the drivetrain to which this intake is attached
+            driveSimulation,
+            // Width of the intake
+            Meters.of(0.4),
+            // The extension length of the intake beyond the robot's frame (when activated)
+            Meters.of(0.2),
+            // The intake is mounted on the back side of the chassis
+            IntakeSimulation.IntakeSide.FRONT,
+            // The intake can hold up to 1 note
+    1);
+
+        this.intakeSimulation.stopIntake();
+    }
+/*
+    public void intakeAlgae() {
+        this.intakeSimulation = IntakeSimulation.OverTheBumperIntake(
+            // Specify the type of game pieces that the intake can collect
+            "Algae",
+            // Specify the drivetrain to which this intake is attached
+            driveSimulation,
+            // Width of the intake
+            Meters.of(1),
+            // The extension length of the intake beyond the robot's frame (when activated)
+            Meters.of(1),
+            // The intake is mounted on the back side of the chassis
+            IntakeSimulation.IntakeSide.FRONT,
+            // The intake can hold up to 1 note
+    1);
+
+        this.intakeSimulation.startIntake();
     }
 */
 }
