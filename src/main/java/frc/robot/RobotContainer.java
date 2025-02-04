@@ -148,12 +148,15 @@ public class RobotContainer {
      * {@link GenericHID} or one of its subclasses ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}),
      * and then passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
+
+    double speedMult = 0.75;
+    double rotMult = 0.65;
     private void configureButtonBindings() {
         // Default command, normal field-relative drive
         // getX moves left/right.
         // getY moves up/down.
         drive.setDefaultCommand(DriveCommands.joystickDrive(
-                drive, () -> controller.getY(), () -> controller.getX(), () -> -controller.getZ()));
+                drive, () -> controller.getRawAxis(1) * speedMult, () -> controller.getRawAxis(0) * speedMult, () -> -controller.getRawAxis(2) * rotMult));
 
         // Lock to 0° when A button is held
         new JoystickButton(controller, 3)
