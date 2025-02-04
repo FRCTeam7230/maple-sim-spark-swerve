@@ -155,29 +155,40 @@ public class RobotContainer {
      * {@link GenericHID} or one of its subclasses ({@link edu.wpi.first.wpilibj.Joystick} or {@link XboxController}),
      * and then passing it to a {@link edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
+
+    double speedMult = 0.75;
+    double rotMult = 0.65;
     private void configureButtonBindings() {
         // Default command, normal field-relative drive
         // getX moves left/right.
         // getY moves up/down.
         drive.setDefaultCommand(DriveCommands.joystickDrive(
-                drive, () -> controller.getY(), () -> controller.getX(), () -> -controller.getZ()));
+                drive, () -> controller.getRawAxis(1) * speedMult, () -> controller.getRawAxis(0) * speedMult, () -> -controller.getRawAxis(2) * rotMult));
+
+
+        double slowSpeed = 0.4;
+        new JoystickButton(controller, 3)
+                .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, slowSpeed, 0));
+
+                
+        new JoystickButton(controller, 4)
+        .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, -slowSpeed, 0));
+        new JoystickButton(controller, 5)
+        .whileTrue(DriveCommands.robotJoystickDrive(drive, slowSpeed, 0, 0));
+        new JoystickButton(controller, 6)
+        .whileTrue(DriveCommands.robotJoystickDrive(drive, -slowSpeed, 0, 0));
 
         // Lock to 0° when A button is held
-        new JoystickButton(controller, 3)
-                .whileTrue(DriveCommands.joystickDriveAtAngle(
-                        drive, () -> controller.getY(), () -> controller.getX(), () -> new Rotation2d()));
+        // new JoystickButton(controller, 3)
+        //         .whileTrue(DriveCommands.joystickDriveAtAngle(
+        //                 drive, () -> controller.getY(), () -> controller.getX(), () -> new Rotation2d()));
 
         // Switch to X pattern when X button is pressed
-        new JoystickButton(controller, 4).onTrue(Commands.runOnce(drive::stopWithX, drive));
-
-        new JoystickButton(controller, 1).onTrue(Commands.runOnce(drive::scoreAlgae, drive));
-        new JoystickButton(controller, 2).onTrue(Commands.runOnce(drive::scoreCoral, drive));
-/*
-        new JoystickButton(controller, 5).onTrue(Commands.runOnce(drive::spawnAlgae, drive));
-        new JoystickButton(controller, 6).onTrue(Commands.runOnce(drive::spawnCoral, drive));
-        new JoystickButton(controller, 7).onTrue(Commands.runOnce(drive::intakeCoralStart, drive));
-        new JoystickButton(controller, 8).onTrue(Commands.runOnce(drive::intakeCoralStop, drive));
-*/
+        // new JoystickButton(controller, 4).onTrue(Commands.runOnce(drive::stopWithX, drive));
+        // new JoystickButton(controller, 1).onTrue(Commands.runOnce(drive::scoreAlgae, drive));
+        new JoystickButton(controller, 1).onTrue(Commands.runOnce(drive::scoreCoral, drive));
+        // new JoystickButton(controller, 5).onTrue(Commands.runOnce(drive::spawnAlgae, drive));
+        // new JoystickButton(controller, 6).onTrue(Commands.runOnce(drive::spawnCoral, drive));
 
         new JoystickButton(controller, 7)
                 .whileTrue(new RunCommand(
