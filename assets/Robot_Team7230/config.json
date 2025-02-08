@@ -31,6 +31,21 @@
       ],
       "fov": 90
     },
+  {
+      "name": "ElevatedCamera",
+      "rotations": [],
+      "position": [
+        0.2,
+        0,
+        1.8
+
+      ],
+      "resolution": [
+        960,
+        720
+      ],
+      "fov": 60
+    },
     {
       "name": "Back Camera",
       "rotations": [
