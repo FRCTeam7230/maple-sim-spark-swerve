@@ -32,6 +32,8 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -50,7 +52,17 @@ import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnFly
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
+import frc.robot.Constants.*;
+import frc.robot.subsystems.elevator.*;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
  * little robot logic should actually be handled in the {@link Robot} periodic methods (other than the scheduler calls).
@@ -73,6 +85,11 @@ public class RobotContainer {
 
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
+        
+
+        
+
+        
         switch (Constants.currentMode) {
             case REAL:
                 // Real robot, instantiate hardware IO implementations
@@ -133,6 +150,36 @@ public class RobotContainer {
                 break;
         }
 
+        SequentialCommandGroup score = new SequentialCommandGroup();
+        score.addCommands(new RunCommand(
+                () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxElevatorHeightMeters),
+                m_elevator));
+        score.addCommands(Commands.runOnce(drive::scoreCoral, drive));
+        score.addCommands(new RunCommand(
+                () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMinElevatorHeightMeters),
+                m_elevator));
+
+        NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
+        NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
+        NamedCommands.registerCommand("print hello", Commands.print("hello"));
+        /*NamedCommands.registerCommand("Lift the Elevator",(new RunCommand(
+                () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters),
+                m_elevator)));//We can add commands like this, and yes it works as long as you can bear the 5 second wait.*/
+        NamedCommands.registerCommand("Lift the Elevator",(score));//We can add commands like this, and yes it works as long as you can bear the 5 second wait.
+        //NamedCommands.registerCommand("Shoot Coral",(Commands.runOnce(drive::scoreCoral, drive)));
+        //NamedCommands.registerCommand("Lift the Elevator",(Commands.runOnce(drive::scoreCoral, drive)));
+        //NamedCommands.registerCommand("Lower the Elevator",(Commands.runOnce(new WaitCommand(1))));
+        NamedCommands.registerCommand("Dance", Commands.print("This will not be a command where the robot will spin around itself."));
+
+
+        // Use event markers as triggers
+        new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
+        new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));
+
+        //autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
+        //SmartDashboard.putData("Auto Mode", autoChooser);
+
+
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
 
@@ -145,6 +192,17 @@ public class RobotContainer {
                 "Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
         autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
         autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+        SmartDashboard.putData("Reef 1 to Coral Station Left", new PathPlannerAuto("Reef 1 to Coral Station Left"));
+        SmartDashboard.putData("Reef 1 to Station Right", new PathPlannerAuto("Reef 1 to Station Right"));
+        SmartDashboard.putData("Reef 2 to Station Right", new PathPlannerAuto("Reef 2 to Station Right"));
+        SmartDashboard.putData("Reef 2 to Station Left", new PathPlannerAuto("Reef 2 to Station Left"));
+        SmartDashboard.putData("Reef 3 to Station Top", new PathPlannerAuto("Reef 3 to Station Top"));
+        SmartDashboard.putData("Reef 3 to Station Bottom", new PathPlannerAuto("Reef 3 to Station Bottom"));
+        SmartDashboard.putData("Reef 5 to station right", new PathPlannerAuto("Reef 5 to station right"));
+        SmartDashboard.putData("Reef 5 to station left", new PathPlannerAuto("Reef 5 to station left"));
+        SmartDashboard.putData("Reef 6 to station right", new PathPlannerAuto("Reef 6 to station right"));
+        SmartDashboard.putData("Reef 6 to station left", new PathPlannerAuto("Reef 6 to station left"));
 
         // Configure the button bindings
         configureButtonBindings();

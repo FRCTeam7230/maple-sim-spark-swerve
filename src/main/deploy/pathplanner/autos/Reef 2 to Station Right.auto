@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Start to Reef 2 Right"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lift the Elevator"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef 2 to Coral Station"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

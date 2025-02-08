@@ -1,0 +1,31 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Early Game Center"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lift the Elevator"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef 2 to Coral Station"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Dumpster",
+  "choreoAuto": false
+}
