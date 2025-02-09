@@ -6,8 +6,12 @@
     "opponent robots"
   ],
   "autoFolders": [],
-  "defaultMaxVel": 4.5,
+  /*"defaultMaxVel": 4.5,
   "defaultMaxAccel": 12.0,
+  "defaultMaxAngVel": 540.0,
+  "defaultMaxAngAccel": 720.0,*/
+  "defaultMaxVel": 3.0,
+  "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "robotMass": 45.0,
@@ -19,5 +23,12 @@
   "maxDriveSpeed": 5.45,
   "driveMotorType": "krakenX60",
   "driveCurrentLimit": 56.0,
-  "wheelCOF": 1.2
+  "wheelCOF": 1.2,
+  
+  /*"maxVelocity": 3.0,
+  "maxAcceleration": 3.0,
+  "maxAngularVelocity": 540.0,
+  "maxAngularAcceleration": 720.0,
+  "nominalVoltage": 12.0,
+  "unlimited": false*/
 }
