@@ -38,6 +38,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
+import frc.robot.commands.ElevatorCommand;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.vision.*;
@@ -150,22 +151,33 @@ public class RobotContainer {
                 break;
         }
 
+        //TODO: End these commands pls :(
         SequentialCommandGroup score = new SequentialCommandGroup();
-        score.addCommands(new RunCommand(
+        ElevatorCommand elevUp = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters);
+        ElevatorCommand elevDown = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinElevatorHeightMeters);
+       /*  score.addCommands(Commands.run(
                 () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxElevatorHeightMeters),
-                m_elevator));
+                m_elevator));*/
+        
+        score.addCommands(elevUp);    
+        ///m_elevator.atHeight(Constants.ElevatorConstants.kMaxElevatorHeightMeters,1).onTrue(score.isFinished());
         score.addCommands(Commands.runOnce(drive::scoreCoral, drive));
-        score.addCommands(new RunCommand(
+        score.addCommands(elevDown);
+        /*Command lift = Commands.run(
+                () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxElevatorHeightMeters),
+                m_elevator);
+        Command scored = Commands.runOnce(drive::scoreCoral, drive);
+        Command lower = Commands.run(
                 () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMinElevatorHeightMeters),
-                m_elevator));
-
+                m_elevator);*/
+        
         NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
         NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
         NamedCommands.registerCommand("print hello", Commands.print("hello"));
         /*NamedCommands.registerCommand("Lift the Elevator",(new RunCommand(
                 () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters),
-                m_elevator)));//We can add commands like this, and yes it works as long as you can bear the 5 second wait.*/
-        NamedCommands.registerCommand("Lift the Elevator",(score));//We can add commands like this, and yes it works as long as you can bear the 5 second wait.
+                m_elevator)));*/
+        NamedCommands.registerCommand("Lift the Elevator",score);
         //NamedCommands.registerCommand("Shoot Coral",(Commands.runOnce(drive::scoreCoral, drive)));
         //NamedCommands.registerCommand("Lift the Elevator",(Commands.runOnce(drive::scoreCoral, drive)));
         //NamedCommands.registerCommand("Lower the Elevator",(Commands.runOnce(new WaitCommand(1))));
