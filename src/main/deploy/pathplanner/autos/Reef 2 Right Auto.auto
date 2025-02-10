@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Early Game Center"
+            "pathName": "Start to Reef 2 Right"
           }
         },
         {
@@ -21,11 +21,17 @@
           "data": {
             "pathName": "Reef 2 to Coral Station"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Run intake"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Dumpster",
+  "folder": null,
   "choreoAuto": false
 }

@@ -21,6 +21,12 @@
           "data": {
             "pathName": "Coral 6 Path 2"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Run intake"
+          }
         }
       ]
     }

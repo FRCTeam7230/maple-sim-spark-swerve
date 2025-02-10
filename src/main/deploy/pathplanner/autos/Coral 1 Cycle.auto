@@ -21,11 +21,17 @@
           "data": {
             "pathName": "Reef 1 to Coral Station"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Run intake"
+          }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Coral Cycles",
+  "folder": null,
   "choreoAuto": false
 }

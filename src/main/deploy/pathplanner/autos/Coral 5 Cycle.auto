@@ -3,10 +3,7 @@
   "command": {
     "type": "sequential",
     "data": {
-<<<<<<< Updated upstream
-      "commands": []
-=======
-      "commands": [
+    "commands": [
         {
           "type": "path",
           "data": {
@@ -20,7 +17,6 @@
           }
         }
       ]
->>>>>>> Stashed changes
     }
   },
   "resetOdom": true,

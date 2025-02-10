@@ -11,15 +11,27 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "Lift the Elevator"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Reef 5 to Station left"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Run intake"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Coral Cycles",
+  "folder": null,
   "choreoAuto": false
 }

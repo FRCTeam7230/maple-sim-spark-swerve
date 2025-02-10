@@ -21,6 +21,12 @@
           "data": {
             "pathName": "Reef 3 To Coral Station 2"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Run intake"
+          }
         }
       ]
     }

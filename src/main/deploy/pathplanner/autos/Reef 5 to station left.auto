@@ -21,6 +21,12 @@
           "data": {
             "pathName": "Reef 5 to Station left"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Run intake"
+          }
         }
       ]
     }

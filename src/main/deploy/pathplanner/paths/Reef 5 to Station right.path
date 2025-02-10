@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.0638817211616707,
-        "y": 2.5003950442369485
+        "x": 2.118260775712046,
+        "y": 2.963779167679117
       },
       "isLocked": false,
       "linkedName": "reef 5 right"
@@ -20,8 +20,8 @@
         "y": 1.28
       },
       "prevControl": {
-        "x": 2.07211206814959,
-        "y": 1.6542536968784982
+        "x": 2.62340934085414,
+        "y": 1.9029204446968375
       },
       "nextControl": null,
       "isLocked": false,

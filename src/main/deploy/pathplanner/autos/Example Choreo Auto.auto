@@ -7,25 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "rush first"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "rush second"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "rush third"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "rush fourth and shoot"
+            "pathName": null
           }
         }
       ]

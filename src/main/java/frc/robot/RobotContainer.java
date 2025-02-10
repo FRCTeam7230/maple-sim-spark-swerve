@@ -151,10 +151,11 @@ public class RobotContainer {
                 break;
         }
 
-        //TODO: End these commands pls :(
+        //TODO: Test this on advantage scope.
         SequentialCommandGroup score = new SequentialCommandGroup();
         ElevatorCommand elevUp = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters);
         ElevatorCommand elevDown = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinElevatorHeightMeters);
+        SequentialCommandGroup intake = new SequentialCommandGroup();
        /*  score.addCommands(Commands.run(
                 () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxElevatorHeightMeters),
                 m_elevator));*/
@@ -163,6 +164,7 @@ public class RobotContainer {
         ///m_elevator.atHeight(Constants.ElevatorConstants.kMaxElevatorHeightMeters,1).onTrue(score.isFinished());
         score.addCommands(Commands.runOnce(drive::scoreCoral, drive));
         score.addCommands(elevDown);
+        intake.addCommands(new WaitCommand(3));
         /*Command lift = Commands.run(
                 () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxElevatorHeightMeters),
                 m_elevator);
@@ -178,6 +180,7 @@ public class RobotContainer {
                 () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters),
                 m_elevator)));*/
         NamedCommands.registerCommand("Lift the Elevator",score);
+        NamedCommands.registerCommand("Run intake",intake);
         //NamedCommands.registerCommand("Shoot Coral",(Commands.runOnce(drive::scoreCoral, drive)));
         //NamedCommands.registerCommand("Lift the Elevator",(Commands.runOnce(drive::scoreCoral, drive)));
         //NamedCommands.registerCommand("Lower the Elevator",(Commands.runOnce(new WaitCommand(1))));

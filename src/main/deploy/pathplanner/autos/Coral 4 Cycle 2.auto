@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Eary Game Top"
+            "pathName": "Station to Reef 4 Bottom"
           }
         },
         {
@@ -19,13 +19,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 2 to Coral Station"
+            "pathName": "Reef 4 Bottom to Station"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Run intake"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Dumpster",
+  "folder": null,
   "choreoAuto": false
 }

@@ -7,37 +7,37 @@
         {
           "type": "path",
           "data": {
-            "pathName": "shoot preload and second"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "shoot third and fourth"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "grab fifth and shoot"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "grab sixth and shoot"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "grab seven and shoot"
+            "pathName": null
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "grab eighth and shoot"
+            "pathName": null
           }
         }
       ]
