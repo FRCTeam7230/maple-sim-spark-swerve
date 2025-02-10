@@ -219,6 +219,19 @@ public class RobotContainer {
         SmartDashboard.putData("Reef 6 to station right", new PathPlannerAuto("Reef 6 to station right"));
         SmartDashboard.putData("Reef 6 to station left", new PathPlannerAuto("Reef 6 to station left"));
 
+        SmartDashboard.putData("Coral Cycle 1", new PathPlannerAuto("Coral Cycle 1"));
+        SmartDashboard.putData("Coral 1 Cycle 2", new PathPlannerAuto("Coral 1 Cycle 2"));
+        SmartDashboard.putData("Coral Cycle 2", new PathPlannerAuto("Coral Cycle 2"));
+        //SmartDashboard.putData("Coral Cycle 1", new PathPlannerAuto("Coral Cycle 1"));
+        SmartDashboard.putData("Coral 3 Cycle", new PathPlannerAuto("Coral 3 Cycle"));
+        //SmartDashboard.putData("Coral Cycle 1", new PathPlannerAuto("Coral Cycle 1"));
+        SmartDashboard.putData("Coral 4 Cycle", new PathPlannerAuto("Coral Cycle"));
+        SmartDashboard.putData("Coral 4 Cycle 2", new PathPlannerAuto("Coral Cycle 2"));
+        SmartDashboard.putData("Coral 5 Cycle", new PathPlannerAuto("Coral 5 Cycle"));
+        SmartDashboard.putData("Coral 5 Cycle 2", new PathPlannerAuto("Coral 5 Cycle 2"));
+        SmartDashboard.putData("Coral 6 Cycle", new PathPlannerAuto("Coral 6 Cycle 1"));
+        //SmartDashboard.putData("Coral 6 Cycle 1", new PathPlannerAuto("Coral 6 Cycle 1"));
+        
         // Configure the button bindings
         configureButtonBindings();
     }
