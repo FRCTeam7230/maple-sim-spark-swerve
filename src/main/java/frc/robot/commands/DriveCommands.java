@@ -47,6 +47,7 @@ public class DriveCommands {
         private static final double FF_RAMP_RATE = 0.1; // Volts/Sec
         private static final double WHEEL_RADIUS_MAX_VELOCITY = 0.25; // Rad/Sec
         private static final double WHEEL_RADIUS_RAMP_RATE = 0.05; // Rad/Sec^2
+        private static boolean IS_FIELD_RELATIVE = true;
 
         private DriveCommands() {
         }
@@ -69,13 +70,32 @@ public class DriveCommands {
          * Field relative drive command using two joysticks (controlling linear and
          * angular velocities).
          */
+
+        public static Command toggleDrive(){
+                return Commands.sequence(
+                        Commands.runOnce(() -> {
+                                if (IS_FIELD_RELATIVE){
+                                        IS_FIELD_RELATIVE = false;
+                                }else{
+                                        IS_FIELD_RELATIVE = true;
+                                }
+                        }),
+                        Commands.waitSeconds(1)
+                );
+        }
+
         public static Command joystickDrive(
                         Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier omegaSupplier) {
                 return Commands.run(
                                 () -> {
                                         // Get linear velocity
                                         Translation2d linearVelocity = getLinearVelocityFromJoysticks(
-                                                        xSupplier.getAsDouble(), ySupplier.getAsDouble());
+                                                xSupplier.getAsDouble(), ySupplier.getAsDouble());
+                                        if (!IS_FIELD_RELATIVE){
+                                                linearVelocity = getLinearVelocityFromJoysticks(
+                                                        -xSupplier.getAsDouble(), -ySupplier.getAsDouble());
+                                        }
+                                        
 
                                         // Apply rotation deadband
                                         double omega = MathUtil.applyDeadband(omegaSupplier.getAsDouble(), DEADBAND);
@@ -88,36 +108,17 @@ public class DriveCommands {
                                                         linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
                                                         linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
                                                         omega * drive.getMaxAngularSpeedRadPerSec());
-                                        boolean isFlipped = DriverStation.getAlliance().isPresent()
-                                                        && DriverStation.getAlliance().get() == Alliance.Red;
-                                        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
-                                                        speeds,
-                                                        isFlipped ? drive.getRotation().plus(new Rotation2d(Math.PI))
-                                                                        : drive.getRotation());
-                                        drive.runVelocity(speeds);
-                                },
-                                drive);
-        }
 
-        public static Command robotJoystickDrive(
-                        Drive drive, double xSupplier, double ySupplier, double omegaSupplier) {
-                return Commands.run(
-                                () -> {
-                                        // Get linear velocity
-                                        Translation2d linearVelocity = getLinearVelocityFromJoysticks(
-                                                        xSupplier, ySupplier);
+                                        if (IS_FIELD_RELATIVE) {
+                                                boolean isFlipped = DriverStation.getAlliance().isPresent()
+                                                                && DriverStation.getAlliance().get() == Alliance.Red;
+                                                speeds = ChassisSpeeds.fromFieldRelativeSpeeds(
+                                                                speeds,
+                                                                isFlipped ? drive.getRotation()
+                                                                                .plus(new Rotation2d(Math.PI))
+                                                                                : drive.getRotation());
+                                        }
 
-                                        // Apply rotation deadband
-                                        double omega = MathUtil.applyDeadband(omegaSupplier, DEADBAND);
-
-                                        // Square rotation value for more precise control
-                                        omega = Math.copySign(omega * omega, omega);
-
-                                        // Convert to field relative speeds & send command
-                                        ChassisSpeeds speeds = new ChassisSpeeds(
-                                                        linearVelocity.getX() * drive.getMaxLinearSpeedMetersPerSec(),
-                                                        linearVelocity.getY() * drive.getMaxLinearSpeedMetersPerSec(),
-                                                        omega * drive.getMaxAngularSpeedRadPerSec());
                                         drive.runVelocity(speeds);
                                 },
                                 drive);

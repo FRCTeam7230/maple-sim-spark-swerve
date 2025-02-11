@@ -216,6 +216,7 @@ public class RobotContainer {
 
     double speedMult = 0.75;
     double rotMult = 0.65;
+
     private void configureButtonBindings() {
         // Default command, normal field-relative drive
         // getX moves left/right.
@@ -223,18 +224,19 @@ public class RobotContainer {
         drive.setDefaultCommand(DriveCommands.joystickDrive(
                 drive, () -> controller.getRawAxis(1) * speedMult, () -> controller.getRawAxis(0) * speedMult, () -> -controller.getRawAxis(2) * rotMult));
 
+        new JoystickButton(controller, 11).whileTrue(DriveCommands.toggleDrive());
 
-        double slowSpeed = 0.4;
-        new JoystickButton(controller, 3)
-                .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, slowSpeed, 0));
+        // double slowSpeed = 0.4;
+        // new JoystickButton(controller, 3)
+        //         .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, slowSpeed, 0));
 
                 
-        new JoystickButton(controller, 4)
-        .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, -slowSpeed, 0));
-        new JoystickButton(controller, 5)
-        .whileTrue(DriveCommands.robotJoystickDrive(drive, slowSpeed, 0, 0));
-        new JoystickButton(controller, 6)
-        .whileTrue(DriveCommands.robotJoystickDrive(drive, -slowSpeed, 0, 0));
+        // new JoystickButton(controller, 4)
+        // .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, -slowSpeed, 0));
+        // new JoystickButton(controller, 5)
+        // .whileTrue(DriveCommands.robotJoystickDrive(drive, slowSpeed, 0, 0));
+        // new JoystickButton(controller, 6)
+        // .whileTrue(DriveCommands.robotJoystickDrive(drive, -slowSpeed, 0, 0));
 
         // Lock to 0° when A button is held
         // new JoystickButton(controller, 3)
