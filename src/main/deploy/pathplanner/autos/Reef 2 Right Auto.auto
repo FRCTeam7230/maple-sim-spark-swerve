@@ -5,15 +5,22 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Start to Reef 2 Right"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Lift the Elevator"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Start to Reef 2 Right"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Lift the Elevator"
+                }
+              }
+            ]
           }
         },
         {

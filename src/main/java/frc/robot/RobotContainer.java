@@ -158,12 +158,13 @@ public class RobotContainer {
         ElevatorCommand elevUp = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters);
         ElevatorCommand elevDown = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinElevatorHeightMeters);
         SequentialCommandGroup intake = new SequentialCommandGroup();
+        ParallelCommandGroup raiseandmove = new ParallelCommandGroup();
        /*  score.addCommands(Commands.run(
                 () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxElevatorHeightMeters),
                 m_elevator));*/
-        
-        score.addCommands(elevUp);    
+        ;    
         ///m_elevator.atHeight(Constants.ElevatorConstants.kMaxElevatorHeightMeters,1).onTrue(score.isFinished());
+        score.addCommands(elevUp);
         score.addCommands(Commands.runOnce(drive::scoreCoral, drive));
         score.addCommands(elevDown);
         intake.addCommands(new WaitCommand(3));
@@ -209,7 +210,7 @@ public class RobotContainer {
                 "Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
         autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
         autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-/*
+
         SmartDashboard.putData("Reef 1 to Coral Station Left", new PathPlannerAuto("Reef 1 to Coral Station Left"));
         SmartDashboard.putData("Reef 1 to Station Right", new PathPlannerAuto("Reef 1 to Station Right"));
         SmartDashboard.putData("Reef 2 to Station Right", new PathPlannerAuto("Reef 2 to Station Right"));
@@ -233,7 +234,7 @@ public class RobotContainer {
         SmartDashboard.putData("Coral 5 Cycle 2", new PathPlannerAuto("Coral 5 Cycle 2"));
         SmartDashboard.putData("Coral 6 Cycle", new PathPlannerAuto("Coral 6 Cycle 1"));
         //SmartDashboard.putData("Coral 6 Cycle 1", new PathPlannerAuto("Coral 6 Cycle 1"));
-*/        
+ 
         // Configure the button bindings
         configureButtonBindings();
     }
