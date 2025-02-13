@@ -49,8 +49,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 4.5,
-    "maxAcceleration": 12.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
@@ -61,7 +61,7 @@
     "rotation": 120.57922687248863
   },
   "reversed": false,
-  "folder": "opponent robots",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": -178.8065105760179

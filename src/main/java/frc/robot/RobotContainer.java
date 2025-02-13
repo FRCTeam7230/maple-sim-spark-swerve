@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -153,6 +154,7 @@ public class RobotContainer {
 
         //TODO: Test this on advantage scope.
         SequentialCommandGroup score = new SequentialCommandGroup();
+        //ParallelCommandGroup notsure = new ParallelCommandGroup()
         ElevatorCommand elevUp = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters);
         ElevatorCommand elevDown = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinElevatorHeightMeters);
         SequentialCommandGroup intake = new SequentialCommandGroup();
@@ -190,7 +192,7 @@ public class RobotContainer {
         // Use event markers as triggers
         new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
         new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));
-
+        //new EventTrigger()
         //autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
         //SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -207,7 +209,7 @@ public class RobotContainer {
                 "Drive SysId (Quasistatic Reverse)", drive.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
         autoChooser.addOption("Drive SysId (Dynamic Forward)", drive.sysIdDynamic(SysIdRoutine.Direction.kForward));
         autoChooser.addOption("Drive SysId (Dynamic Reverse)", drive.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-
+/*
         SmartDashboard.putData("Reef 1 to Coral Station Left", new PathPlannerAuto("Reef 1 to Coral Station Left"));
         SmartDashboard.putData("Reef 1 to Station Right", new PathPlannerAuto("Reef 1 to Station Right"));
         SmartDashboard.putData("Reef 2 to Station Right", new PathPlannerAuto("Reef 2 to Station Right"));
@@ -231,7 +233,7 @@ public class RobotContainer {
         SmartDashboard.putData("Coral 5 Cycle 2", new PathPlannerAuto("Coral 5 Cycle 2"));
         SmartDashboard.putData("Coral 6 Cycle", new PathPlannerAuto("Coral 6 Cycle 1"));
         //SmartDashboard.putData("Coral 6 Cycle 1", new PathPlannerAuto("Coral 6 Cycle 1"));
-        
+*/        
         // Configure the button bindings
         configureButtonBindings();
     }

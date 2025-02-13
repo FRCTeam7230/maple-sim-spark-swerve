@@ -7,25 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "To Reef 3"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Lift the Elevator"
+            "pathName": "Coral 5 Cycle 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 3 To Coral Station 2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Run intake"
+            "pathName": "Reef 5 to Station right"
           }
         }
       ]
