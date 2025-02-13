@@ -7,31 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "rush first"
+            "pathName": "rush first pp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "rush second"
+            "pathName": "rush second pp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "rush third"
+            "pathName": "rush third pp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "rush fourth and shoot"
+            "pathName": "rush fourth and shoot pp"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Choreo (check if they delete itself)",
   "choreoAuto": true
 }
