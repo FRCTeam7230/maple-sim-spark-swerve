@@ -9,6 +9,12 @@
           "data": {
             "pathName": "Test path"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef 1 Left to Station"
+          }
         }
       ]
     }
