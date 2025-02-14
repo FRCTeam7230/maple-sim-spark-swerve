@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.64775,
-        "y": 6.823249999999999
+        "x": 1.3186475409836067,
+        "y": 7.219723360655737
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.642995995007927,
-        "y": 6.146485920601667
+        "x": 2.313893535991534,
+        "y": 6.542959281257406
       },
       "isLocked": false,
       "linkedName": "Coral Station"
@@ -47,7 +47,14 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Start Lifting Elevator",
+      "waypointRelativePos": 1.5,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
