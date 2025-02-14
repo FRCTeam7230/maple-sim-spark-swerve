@@ -1,0 +1,37 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Station to Reef 2 Right"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lift the Elevator"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef 2 Right to Station"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Run intake"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Coral Cycles",
+  "choreoAuto": false
+}

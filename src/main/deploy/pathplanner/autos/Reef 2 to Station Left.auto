@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "To Reef 2, 2"
+            "pathName": "Start to Reef 2 Left"
           }
         },
         {
@@ -19,7 +19,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 2 to Coral Station 2"
+            "pathName": "Reef 2 Left to Station"
           }
         },
         {
@@ -32,6 +32,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Traveling to Station",
   "choreoAuto": false
 }

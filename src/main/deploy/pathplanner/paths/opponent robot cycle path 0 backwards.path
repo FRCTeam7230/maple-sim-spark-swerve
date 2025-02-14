@@ -52,8 +52,8 @@
         "y": 1.8113038361242122
       },
       "prevControl": {
-        "x": 0.986088425314189,
-        "y": 3.856324296271894
+        "x": 0.9860884253141888,
+        "y": 3.8563242962718935
       },
       "nextControl": null,
       "isLocked": false,
@@ -77,7 +77,7 @@
     "rotation": 91.08092418666095
   },
   "reversed": false,
-  "folder": "opponent robots",
+  "folder": "Unrelated Pats",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 90.0

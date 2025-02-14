@@ -1,0 +1,25 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Station to Reef 5 Right"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Reef 5 Right to Station"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Coral Cycles",
+  "choreoAuto": false
+}

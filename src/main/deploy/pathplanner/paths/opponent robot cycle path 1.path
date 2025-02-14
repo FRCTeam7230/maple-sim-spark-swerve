@@ -109,7 +109,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": "opponent robots",
+  "folder": "Unrelated Pats",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 63.03428556752914
