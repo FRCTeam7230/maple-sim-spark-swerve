@@ -27,7 +27,7 @@ public class ElevatorCommand extends Command {
     }
     @Override
     public void initialize(){
-
+        //Intializes Robot
     }
     @Override
     public void execute(){
