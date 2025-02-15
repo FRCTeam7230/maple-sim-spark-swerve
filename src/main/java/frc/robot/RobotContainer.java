@@ -226,17 +226,17 @@ public class RobotContainer {
 
         new JoystickButton(controller, 11).whileTrue(DriveCommands.toggleDrive());
 
-        // double slowSpeed = 0.4;
-        // new JoystickButton(controller, 3)
-        //         .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, slowSpeed, 0));
+        double slowSpeed = 0.4;
+        new JoystickButton(controller, 3)
+                .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, slowSpeed, 0));
 
                 
-        // new JoystickButton(controller, 4)
-        // .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, -slowSpeed, 0));
-        // new JoystickButton(controller, 5)
-        // .whileTrue(DriveCommands.robotJoystickDrive(drive, slowSpeed, 0, 0));
-        // new JoystickButton(controller, 6)
-        // .whileTrue(DriveCommands.robotJoystickDrive(drive, -slowSpeed, 0, 0));
+        new JoystickButton(controller, 4)
+        .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, -slowSpeed, 0));
+        new JoystickButton(controller, 5)
+        .whileTrue(DriveCommands.robotJoystickDrive(drive, slowSpeed, 0, 0));
+        new JoystickButton(controller, 6)
+        .whileTrue(DriveCommands.robotJoystickDrive(drive, -slowSpeed, 0, 0));
 
         // Lock to 0° when A button is held
         // new JoystickButton(controller, 3)
