@@ -31,7 +31,19 @@
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Raise",
+      "waypointRelativePos": 0.1,
+      "endWaypointRelativePos": 0.7526115859449151,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Raise"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
