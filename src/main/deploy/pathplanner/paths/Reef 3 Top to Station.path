@@ -3,57 +3,57 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.778073770491804,
-        "y": 4.2005
+        "x": 6.078,
+        "y": 4.2
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.765140020945716,
-        "y": 4.450165212079455
+        "x": 6.073241595280027,
+        "y": 4.449954711066868
       },
       "isLocked": false,
-      "linkedName": "Reef 3"
+      "linkedName": "Scored for Reef 3 Top"
     },
     {
       "anchor": {
-        "x": 5.778073770491804,
-        "y": 4.942729657774883
+        "x": 6.286,
+        "y": 5.35
       },
       "prevControl": {
-        "x": 5.951329344946765,
-        "y": 4.704301858225038
+        "x": 6.490110335748213,
+        "y": 4.9711976923508265
       },
       "nextControl": {
-        "x": 5.631112113712869,
-        "y": 5.144972757624521
+        "x": 5.976911930445577,
+        "y": 5.923627364752735
       },
       "isLocked": false,
-      "linkedName": "Right Corner 2"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 4.492711095260814,
-        "y": 5.663435984541049
+        "x": 4.4779655920983625,
+        "y": 6.251
       },
       "prevControl": {
-        "x": 4.719612576520193,
-        "y": 5.5584801947898415
+        "x": 4.68136786447895,
+        "y": 6.105646927826022
       },
       "nextControl": {
-        "x": 4.11535559100065,
-        "y": 5.837985946695399
+        "x": 4.271187469520597,
+        "y": 6.398765484737595
       },
       "isLocked": false,
-      "linkedName": "Top Corner"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.3186475409836067,
-        "y": 7.219723360655737
+        "x": 1.64775,
+        "y": 6.823249999999999
       },
       "prevControl": {
-        "x": 1.545955525485884,
-        "y": 7.115650885036521
+        "x": 2.1567997703165815,
+        "y": 6.699298946791994
       },
       "nextControl": null,
       "isLocked": false,
@@ -77,7 +77,7 @@
     "rotation": 125.37999999999998
   },
   "reversed": false,
-  "folder": "Reef to Station Paths",
+  "folder": "Center Auto Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

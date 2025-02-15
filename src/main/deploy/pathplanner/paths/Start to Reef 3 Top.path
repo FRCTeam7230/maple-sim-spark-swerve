@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.130115583480732,
+        "x": 7.13,
         "y": 4.2005
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.035702546659434,
+        "x": 6.035586963178702,
         "y": 4.2140210207173485
       },
       "isLocked": false,
@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 5.778073770491804,
+        "x": 6.129,
         "y": 4.2005
       },
       "prevControl": {
-        "x": 6.308828431529768,
+        "x": 6.659754661037963,
         "y": 4.2061500847923226
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef 3"
+      "linkedName": "Midpoint for Reef 3 Top"
     }
   ],
   "rotationTargets": [],
@@ -45,7 +45,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Start to Reef Paths",
+  "folder": "Center Auto Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

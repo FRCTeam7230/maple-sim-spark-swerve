@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -153,47 +154,27 @@ public class RobotContainer {
         }
 
         //TODO: Test this on advantage scope.
-        SequentialCommandGroup score = new SequentialCommandGroup();
-        //ParallelCommandGroup notsure = new ParallelCommandGroup()
         ElevatorCommand elevUp = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters);
-        ElevatorCommand elevDown = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinElevatorHeightMeters);
-        SequentialCommandGroup intake = new SequentialCommandGroup();
-        ParallelCommandGroup raiseandmove = new ParallelCommandGroup();
-       /*  score.addCommands(Commands.run(
-                () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxElevatorHeightMeters),
-                m_elevator));*/
-        ;    
-        ///m_elevator.atHeight(Constants.ElevatorConstants.kMaxElevatorHeightMeters,1).onTrue(score.isFinished());
-        score.addCommands(elevUp);
-        score.addCommands(Commands.runOnce(drive::scoreCoral, drive));
-        score.addCommands(elevDown);
-        intake.addCommands(new WaitCommand(3));
-        /*Command lift = Commands.run(
-                () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxElevatorHeightMeters),
-                m_elevator);
-        Command scored = Commands.runOnce(drive::scoreCoral, drive);
-        Command lower = Commands.run(
-                () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMinElevatorHeightMeters),
-                m_elevator);*/
-        
-        NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
-        NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
-        NamedCommands.registerCommand("print hello", Commands.print("hello"));
-        /*NamedCommands.registerCommand("Lift the Elevator",(new RunCommand(
-                () -> m_elevator.reachGoal(Constants.ElevatorSimConstants.kMaxElevatorHeightMeters),
-                m_elevator)));*/
-        NamedCommands.registerCommand("Lift the Elevator",score);
-        NamedCommands.registerCommand("Run intake",intake);
-        //NamedCommands.registerCommand("Shoot Coral",(Commands.runOnce(drive::scoreCoral, drive)));
-        //NamedCommands.registerCommand("Lift the Elevator",(Commands.runOnce(drive::scoreCoral, drive)));
-        //NamedCommands.registerCommand("Lower the Elevator",(Commands.runOnce(new WaitCommand(1))));
-        NamedCommands.registerCommand("Dance", Commands.print("This will not be a command where the robot will spin around itself."));
+    ElevatorCommand elevDown = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinElevatorHeightMeters);
+    ProxyCommand a = new ProxyCommand(elevUp);//What if we use proxy?
+    ElevatorCommand score = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters-0.1);
+
+    NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
+    NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
+    NamedCommands.registerCommand("print hello", Commands.print("hello"));
+    NamedCommands.registerCommand("Lift the Elevator",new WaitCommand(5));//We can add commands like this, and yes it works as long as you can bear the 5 second wait.
+    NamedCommands.registerCommand("Dance", Commands.print("This will not be a command where the robot will spin around itself."));
+
+    NamedCommands.registerCommand("Raise Elevator",elevUp);
+    NamedCommands.registerCommand("Lower Elevator",elevDown);
+    NamedCommands.registerCommand("Score",score);
 
 
         // Use event markers as triggers
         new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
-        new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));
-        //new EventTrigger()
+        //new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));
+        new EventTrigger("Raise Elevator").onTrue(elevUp);
+        new EventTrigger("Lower Elevator").onTrue(elevDown);
         //autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
         //SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -234,7 +215,7 @@ public class RobotContainer {
         SmartDashboard.putData("Coral 5 Cycle 2", new PathPlannerAuto("Coral 5 Cycle 2"));
         SmartDashboard.putData("Coral 6 Cycle", new PathPlannerAuto("Coral 6 Cycle 1"));
         //SmartDashboard.putData("Coral 6 Cycle 1", new PathPlannerAuto("Coral 6 Cycle 1"));
- 
+        SmartDashboard.putData("Test auto", new PathPlannerAuto("Test auto"));
         // Configure the button bindings
         configureButtonBindings();
     }

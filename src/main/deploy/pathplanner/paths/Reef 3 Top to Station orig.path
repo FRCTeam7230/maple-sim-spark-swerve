@@ -3,61 +3,61 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.929,
-        "y": 3.8772611769792764
+        "x": 5.778073770491804,
+        "y": 4.2005
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.996346760343495,
-        "y": 3.8442905352524854
+        "x": 5.765140020945716,
+        "y": 4.450165212079455
       },
       "isLocked": false,
-      "linkedName": "Scored for Reef 3 Bottom"
+      "linkedName": "Reef 3"
     },
     {
       "anchor": {
-        "x": 6.429,
-        "y": 2.667
+        "x": 5.778073770491804,
+        "y": 4.942729657774883
       },
       "prevControl": {
-        "x": 6.735539122666026,
-        "y": 2.912988472850142
+        "x": 5.951329344946765,
+        "y": 4.704301858225038
       },
       "nextControl": {
-        "x": 5.6392503621813805,
-        "y": 2.033249548666545
+        "x": 5.631112113712869,
+        "y": 5.144972757624521
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Right Corner 2"
     },
     {
       "anchor": {
-        "x": 4.494749999996693,
-        "y": 1.485
+        "x": 4.492711095260814,
+        "y": 5.663435984541049
       },
       "prevControl": {
-        "x": 4.714795082132926,
-        "y": 1.6036598576927281
+        "x": 4.719612576520193,
+        "y": 5.5584801947898415
       },
       "nextControl": {
-        "x": 4.27470491786046,
-        "y": 1.3663401423072716
+        "x": 4.11535559100065,
+        "y": 5.837985946695399
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Top Corner"
     },
     {
       "anchor": {
-        "x": 1.64775,
-        "y": 1.28
+        "x": 1.3186475409836067,
+        "y": 7.219723360655737
       },
       "prevControl": {
-        "x": 2.1155466009646893,
-        "y": 1.3739801737134398
+        "x": 1.545955525485884,
+        "y": 7.115650885036521
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Coral Station 2"
+      "linkedName": "Coral Station"
     }
   ],
   "rotationTargets": [],
@@ -74,10 +74,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -125.37999999999998
+    "rotation": 125.37999999999998
   },
   "reversed": false,
-  "folder": "Center Auto Paths",
+  "folder": "Reef to Station Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

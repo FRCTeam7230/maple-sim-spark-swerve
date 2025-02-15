@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 5.76608606557377,
+        "x": 6.129,
         "y": 3.8772611769792764
       },
       "prevControl": {
-        "x": 6.803434849539931,
+        "x": 7.166348783966161,
         "y": 3.8814651307282606
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Reef 3, except 2"
+      "linkedName": "Midpoint for Reef 3 Bottom"
     }
   ],
   "rotationTargets": [],
@@ -45,7 +45,7 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Start to Reef Paths",
+  "folder": "Center Auto Paths",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0
