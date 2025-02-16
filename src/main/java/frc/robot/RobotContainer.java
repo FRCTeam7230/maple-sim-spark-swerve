@@ -157,7 +157,7 @@ public class RobotContainer {
         ElevatorCommand elevUp = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters);
     ElevatorCommand elevDown = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinElevatorHeightMeters);
     ProxyCommand a = new ProxyCommand(elevUp);//What if we use proxy?
-    ElevatorCommand score = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters-0.1);
+    ElevatorCommand score = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kScoreElevatorHeightMeters);
 
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
@@ -216,6 +216,8 @@ public class RobotContainer {
         SmartDashboard.putData("Coral 6 Cycle", new PathPlannerAuto("Coral 6 Cycle 1"));
         //SmartDashboard.putData("Coral 6 Cycle 1", new PathPlannerAuto("Coral 6 Cycle 1"));
         SmartDashboard.putData("Test auto", new PathPlannerAuto("Test auto"));
+        SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
+        SmartDashboard.putData("COMP - Start Right (Our Barge) Side Auto", new PathPlannerAuto("COMP - Start Right (Our Barge) Side Auto"));
         // Configure the button bindings
         configureButtonBindings();
     }

@@ -56,6 +56,8 @@ public final class Constants {
       public static final double kMinElevatorHeightMeters = 0.0;
       //public static final double kMaxElevatorHeightMeters = 10.25;
       public static final double kMaxElevatorHeightMeters = Units.inchesToMeters(72);
+      public static final double kScoreElevatorHeightMeters = Units.inchesToMeters(60);
+
   
       public static final double kRotationToMeters = kElevatorDrumRadius * 2 * Math.PI;
       public static final double kRPMtoMPS = (kElevatorDrumRadius * 2 * Math.PI) / 60;
@@ -85,8 +87,9 @@ public final class Constants {
       public static final double kSetpointMeters = Units.inchesToMeters(42.875);
       public static final double kLowerkSetpointMeters = Units.inchesToMeters(15);
       // Encoder is reset to measure 0 at the bottom, so minimum height is 0.
-      public static final double kMinElevatorHeightMeters = 0.0;
+      public static final double kMinElevatorHeightMeters = 0.0+0.03;//Idk why, but on the sim, the elevator is slightly afloat
       public static final double kMaxElevatorHeightMeters = Units.inchesToMeters(50);
+      public static final double kScoreElevatorHeightMeters = Units.inchesToMeters(40);
     
       // distance per pulse = (distance per revolution) / (pulses per revolution)
       //  = (Pi * D) / ppr
