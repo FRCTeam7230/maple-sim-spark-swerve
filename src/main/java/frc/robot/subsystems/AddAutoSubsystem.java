@@ -71,7 +71,7 @@ public class AddAutoSubsystem extends SubsystemBase{
         }
         SmartDashboard.putStringArray("Path Names",array);//Can't see this in smardashboard
     }
-    public void configurePaths(String autoName){//Combines paths into a giant auto.
+    public void configurePathsAuto(String autoName){//Combines paths into a giant auto.
         SequentialCommandGroup newPathList = new SequentialCommandGroup();
         for(Iterator <PathPlannerAuto> i = pathList.iterator(); i.hasNext();){//Loops through the entire array
             newPathList.addCommands(i.next());
@@ -79,6 +79,14 @@ public class AddAutoSubsystem extends SubsystemBase{
         SmartDashboard.putData(autoName, newPathList);
         //return newPathList;
     }//This method will create a new SequentialCommandGroup based on the array by simply looping around it.
+    public SequentialCommandGroup configurePaths(){//Combines paths into a giant auto.
+        SequentialCommandGroup newPathList = new SequentialCommandGroup();
+        for(Iterator <PathPlannerAuto> i = pathList.iterator(); i.hasNext();){//Loops through the entire array
+            newPathList.addCommands(i.next());
+        }
+        return newPathList;
+    }//This method will create a new SequentialCommandGroup based on the array by simply looping around it.
+
     /*public ArrayList<PathPlannerAuto> returnArray(){
         return pathList;
     }*/

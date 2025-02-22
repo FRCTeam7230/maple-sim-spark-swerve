@@ -166,18 +166,10 @@ public class RobotContainer {
         //ProxyCommand a = new ProxyCommand(elevUp);//What if we use proxy?
         ElevatorCommand score = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kScoreElevatorHeightMeters);
         
-        AddAutoSubsystem auto = new AddAutoSubsystem(autoList);
+        
         //CreatePaths path = new CreatePaths(auto);
         //path.makeThePaths();
-        auto.addPathToEnd(new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
-        auto.addPathToEnd(new PathPlannerAuto("Test auto"));
-        auto.displayPaths();
-        auto.configurePaths("This may or may not work");
-        /*auto.addPathToEnd(
-                new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station")
-        );*/
-                SequentialCommandGroup fullAuto = new SequentialCommandGroup();
-
+        
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
     NamedCommands.registerCommand("print hello", Commands.print("hello"));
@@ -197,8 +189,20 @@ public class RobotContainer {
         //autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
         //SmartDashboard.putData("Auto Mode", autoChooser);
 
-        fullAuto.addCommands(new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
-        fullAuto.addCommands(new PathPlannerAuto("Test auto"));
+
+        AddAutoSubsystem auto = new AddAutoSubsystem(autoList);
+        //fullAuto.addCommands(new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
+        //fullAuto.addCommands(new PathPlannerAuto("Test auto"));
+        auto.addPathToEnd(new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
+        auto.addPathToEnd(new PathPlannerAuto("Test auto"));
+        auto.displayPaths();
+        //auto.configurePathsAuto("This may or may not work");
+        /*auto.addPathToEnd(
+                new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station")
+        );*/
+        //SequentialCommandGroup fullAuto = new SequentialCommandGroup();
+        SequentialCommandGroup fullAuto = auto.configurePaths();
+
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
