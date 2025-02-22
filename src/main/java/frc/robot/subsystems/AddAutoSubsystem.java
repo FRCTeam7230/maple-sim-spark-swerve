@@ -28,7 +28,6 @@ public class AddAutoSubsystem extends SubsystemBase{
 
     //ArrayList<String> pathNames = new ArrayList<String>();
     //SendableChooser<Command> m_chooser = new SendableChooser<Command>();//New plan: use sendables
-    LoggedDashboardChooser<Command> m_chooser;
     public AddAutoSubsystem(ArrayList<PathPlannerAuto> path){
         pathList = path;
     }
