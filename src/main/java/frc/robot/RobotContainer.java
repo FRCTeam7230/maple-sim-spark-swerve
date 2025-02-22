@@ -18,6 +18,8 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
+import java.util.ArrayList;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -39,8 +41,10 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.CreatePaths;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommand;
+import frc.robot.subsystems.AddAutoSubsystem;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.vision.*;
@@ -86,6 +90,7 @@ public class RobotContainer {
     // Dashboard inputs
     private final LoggedDashboardChooser<Command> autoChooser;
 
+    //private LoggedDashboardChooser<Command> m_chooser;
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         
@@ -154,10 +159,24 @@ public class RobotContainer {
         }
 
         //TODO: Test this on advantage scope.
+        ArrayList<PathPlannerAuto> autoList = new ArrayList<PathPlannerAuto>();//This represents 1 giant auto.
+
         ElevatorCommand elevUp = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters);
-    ElevatorCommand elevDown = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinElevatorHeightMeters);
-    ProxyCommand a = new ProxyCommand(elevUp);//What if we use proxy?
-    ElevatorCommand score = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kScoreElevatorHeightMeters);
+        ElevatorCommand elevDown = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinElevatorHeightMeters);
+        //ProxyCommand a = new ProxyCommand(elevUp);//What if we use proxy?
+        ElevatorCommand score = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kScoreElevatorHeightMeters);
+        
+        AddAutoSubsystem auto = new AddAutoSubsystem(autoList);
+        //CreatePaths path = new CreatePaths(auto);
+        //path.makeThePaths();
+        auto.addPathToEnd(new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
+        auto.addPathToEnd(new PathPlannerAuto("Test auto"));
+        auto.displayPaths();
+        auto.configurePaths("This may or may not work");
+        /*auto.addPathToEnd(
+                new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station")
+        );*/
+                SequentialCommandGroup fullAuto = new SequentialCommandGroup();
 
     NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
@@ -169,7 +188,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Lower Elevator",elevDown);
     NamedCommands.registerCommand("Score",score);
 
-
+    
         // Use event markers as triggers
         new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
         //new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));
@@ -178,6 +197,8 @@ public class RobotContainer {
         //autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
         //SmartDashboard.putData("Auto Mode", autoChooser);
 
+        fullAuto.addCommands(new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
+        fullAuto.addCommands(new PathPlannerAuto("Test auto"));
 
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
@@ -218,6 +239,8 @@ public class RobotContainer {
         SmartDashboard.putData("Test auto", new PathPlannerAuto("Test auto"));
         SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
         SmartDashboard.putData("COMP - Start Right (Our Barge) Side Auto", new PathPlannerAuto("COMP - Start Right (Our Barge) Side Auto"));
+        
+        SmartDashboard.putData("Test Combined Path",fullAuto);
         // Configure the button bindings
         configureButtonBindings();
     }
@@ -289,7 +312,11 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
+    
     public Command getAutonomousCommand() {
+        
+        //SmartDashboard.putData("Testing autos :O",m_chooser);
+        //return m_chooser.get();
         return autoChooser.get();
     }
 
