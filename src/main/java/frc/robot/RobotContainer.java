@@ -191,7 +191,7 @@ public class RobotContainer {
 
 
         ArrayList<PathPlannerAuto> autoList = new ArrayList<PathPlannerAuto>();//This represents 1 giant auto.
-        PathPlannerAuto[][] listOfAuto = {
+        PathPlannerAuto[][] listOfAuto = {//Paths can be stored here.
                 {
                         new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"),
                         new PathPlannerAuto("Test auto")
