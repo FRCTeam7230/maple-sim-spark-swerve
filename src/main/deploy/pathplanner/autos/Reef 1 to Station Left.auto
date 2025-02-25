@@ -32,6 +32,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Traveling to Station",
+  "folder": null,
   "choreoAuto": false
 }

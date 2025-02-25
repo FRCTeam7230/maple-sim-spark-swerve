@@ -7,25 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Start to Reef 6 Left"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Lift the Elevator"
+            "pathName": "Reef 2 to Coral Station 2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Reef 6 Left to Station"
+            "pathName": "Close to reef"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Run intake"
+            "name": "Last Align"
           }
         }
       ]
