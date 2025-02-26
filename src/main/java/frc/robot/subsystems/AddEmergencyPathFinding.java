@@ -41,7 +41,6 @@ public class AddEmergencyPathFinding extends SubsystemBase{
                 0.0 // Goal end velocity in meters/sec
                 //0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
         );
-        DriverStation.getMatchNumber();
 
     }
     public Pose2d returnTarget(){

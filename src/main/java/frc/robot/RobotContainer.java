@@ -179,7 +179,7 @@ public class RobotContainer {
         
         double coordinateX = 1.2;
         double coordinateY = 1.1;
-        DriverStation.Alliance ally = DriverStation.getAlliance().get(); 
+        //DriverStation.Alliance ally = DriverStation.getAlliance().get(); 
         /*Translation2d a = new Translation2d(
                 DriverStation.getAlliance().get()==DriverStation.Alliance.Blue?coordinateX:17.54-coordinateX,
                 DriverStation.getAlliance().get()==DriverStation.Alliance.Blue?coordinateY:8-coordinateY);*/
