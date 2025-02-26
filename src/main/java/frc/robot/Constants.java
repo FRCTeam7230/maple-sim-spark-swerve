@@ -35,7 +35,6 @@ public final class Constants {
         /** Replaying from a log file. */
         REPLAY
     }
-
     public static class ElevatorConstants
     {
   

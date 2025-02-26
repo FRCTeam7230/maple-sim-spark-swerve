@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.cscore.VideoMode;
@@ -43,16 +44,10 @@ public class AddEmergencyPathFinding extends SubsystemBase{
         );
 
     }
-    public Pose2d returnTarget(){
-        return target;
-    }
-    public PathConstraints returnconstraints(){
-        return constraints;
-    }
-    public void runPathFind(){
-        pathFindingCommand.execute();
-    }
     public Command runPathCommand(){
         return pathFindingCommand;
+    }
+    public void registerCommand(String name){
+            NamedCommands.registerCommand(name,runPathCommand());//Register the pathfinding to a command.
     }
 }
