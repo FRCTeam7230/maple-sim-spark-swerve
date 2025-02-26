@@ -22,8 +22,8 @@ public class AddEmergencyPathFinding extends SubsystemBase{
     PathConstraints constraints;
     Command pathFindingCommand;
     public AddEmergencyPathFinding(double destinationX, double destinationY, double destinationAngle, String alliance){
-        coordinateX = destinationX;//3.9
-        coordinateY = destinationY;//3.3/
+        coordinateX = destinationX;
+        coordinateY = destinationY;
         /*target = new Pose2d(new Translation2d(
                 DriverStation.getAlliance().get()==DriverStation.Alliance.Blue?coordinateX:17.54-coordinateX,
                 DriverStation.getAlliance().get()==DriverStation.Alliance.Blue?coordinateY:8-coordinateY),
@@ -40,7 +40,6 @@ public class AddEmergencyPathFinding extends SubsystemBase{
                 target,
                 constraints,
                 0.0 // Goal end velocity in meters/sec
-                //0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
         );
 
     }
@@ -48,6 +47,6 @@ public class AddEmergencyPathFinding extends SubsystemBase{
         return pathFindingCommand;
     }
     public void registerCommand(String name){
-            NamedCommands.registerCommand(name,runPathCommand());//Register the pathfinding to a command.
+        NamedCommands.registerCommand(name,runPathCommand());//Register the pathfinding to a command.
     }
 }

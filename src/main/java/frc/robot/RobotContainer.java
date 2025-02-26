@@ -208,7 +208,8 @@ public class RobotContainer {
                 //0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
         );*/
         AddEmergencyPathFinding testPath2 = new AddEmergencyPathFinding(coordinateX, coordinateY, 180,"Red");//angle is in degrees.
-        testPath2.registerCommand("Last Align");
+        testPath2.registerCommand("Last Align");//Register the pathfinding to a command.
+        
         NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
     NamedCommands.registerCommand("print hello", Commands.print("hello"));
@@ -218,7 +219,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Raise Elevator",elevUp);
     NamedCommands.registerCommand("Lower Elevator",elevDown);
     NamedCommands.registerCommand("Score",score);
-    //NamedCommands.registerCommand("Last Align",testPath2.runPathCommand());//Register the pathfinding to a command.
+    //NamedCommands.registerCommand("Last Align",testPath2.runPathCommand());
         
         //So this command does run an auto as we desired. However, when making an auto with these commands, YOU MUST ADD A PATH BEFORE THAT. OTHERWISE IT WILL CRASH.
         //SequentialCommandGroup test = new SequentialCommandGroup();
