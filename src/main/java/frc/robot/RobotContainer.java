@@ -48,6 +48,7 @@ import frc.robot.commands.CreatePaths;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommand;
 import frc.robot.subsystems.AddAutoSubsystem;
+import frc.robot.subsystems.AddEmergencyPathFinding;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
 import frc.robot.subsystems.vision.*;
@@ -171,24 +172,45 @@ public class RobotContainer {
         
         ElevatorCommand elevUpToL3 = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters-1);
         ElevatorCommand L3Score = new ElevatorCommand(m_elevator, Constants.ElevatorConstants.kMaxElevatorHeightMeters-1.1);
-
         //CreatePaths path = new CreatePaths(auto);
         //path.makeThePaths();
-        double coordinateX = 3.9;
-        double coordinateY = 3.3;
-        Pose2d target = new Pose2d(new Translation2d(
-                DriverStation.getAlliance().get()==DriverStation.Alliance.Blue?coordinateX:17.6-coordinateX,
-                DriverStation.getAlliance().get()==DriverStation.Alliance.Blue?coordinateY:8-coordinateY),
-                new Rotation2d(0));
+        //Pathfinding basics. Finds a path from current position to a specific coordinate. Use this as last resort if
+        //Vision alignment doesn't work for some reason or the robot is a bit shifted at the intake for some reason.
         
+        double coordinateX = 1.2;
+        double coordinateY = 1.1;
+        DriverStation.Alliance ally = DriverStation.getAlliance().get(); 
+        /*Translation2d a = new Translation2d(
+                DriverStation.getAlliance().get()==DriverStation.Alliance.Blue?coordinateX:17.54-coordinateX,
+                DriverStation.getAlliance().get()==DriverStation.Alliance.Blue?coordinateY:8-coordinateY);*/
+        /*Pose2d target = new Pose2d(new Translation2d(
+                DriverStation.getAlliance().get()==DriverStation.Alliance.Blue?coordinateX:17.54-coordinateX,
+                DriverStation.getAlliance().get()==DriverStation.Alliance.Blue?coordinateY:8-coordinateY),
+                new Rotation2d(180));
         PathConstraints constraints = new PathConstraints(3, 3, 540, 720);
         Command pathFindingCommand = AutoBuilder.pathfindToPose(
                 target,
                 constraints,
                 0.0 // Goal end velocity in meters/sec
                 //0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
-        );
-    NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
+        );*///DriverStation crashes the code for some reason. The rest works just fine as seen below.
+        
+        /*String ally = "Red";
+        Pose2d target = new Pose2d(new Translation2d(
+                ally=="Blue"?coordinateX:17.54-coordinateX,
+                ally=="Blue"?coordinateY:8-coordinateY),
+                new Rotation2d(Math.PI));
+        PathConstraints constraints = new PathConstraints(3, 3, 540, 720);
+        Command pathFindingCommand = AutoBuilder.pathfindToPose(
+                target,
+                constraints,
+                0.0 // Goal end velocity in meters/sec
+                //0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
+        );*/
+
+        AddEmergencyPathFinding testPath2 = new AddEmergencyPathFinding(coordinateX, coordinateY, 180,"Red");//angle is in degrees.
+
+        NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
     NamedCommands.registerCommand("print hello", Commands.print("hello"));
     NamedCommands.registerCommand("Lift the Elevator",new WaitCommand(5));//We can add commands like this, and yes it works as long as you can bear the 5 second wait.
@@ -197,8 +219,14 @@ public class RobotContainer {
     NamedCommands.registerCommand("Raise Elevator",elevUp);
     NamedCommands.registerCommand("Lower Elevator",elevDown);
     NamedCommands.registerCommand("Score",score);
-    NamedCommands.registerCommand("Last Align",pathFindingCommand);
+    NamedCommands.registerCommand("Last Align",testPath2.runPathCommand());
         
+        //So this command does run an auto as we desired. However, when making an auto with these commands, YOU MUST ADD A PATH BEFORE THAT. OTHERWISE IT WILL CRASH.
+        //SequentialCommandGroup test = new SequentialCommandGroup();
+        //test.addCommands(new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
+        //test.addCommands(t);
+        NamedCommands.registerCommand("Testing that 1 command that should run an auto", new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
+
         // Use event markers as triggers
         new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
         //new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));
@@ -211,8 +239,7 @@ public class RobotContainer {
 
         PathPlannerAuto[][] listOfAuto = {//Paths can be stored here.
                 {
-                        new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"),
-                        new PathPlannerAuto("Test auto")
+                        new PathPlannerAuto("Testing that 1 command that should run the auto")
                 },
                 {
                         new PathPlannerAuto("Start Right Side Part 1"),
