@@ -177,8 +177,7 @@ public class RobotContainer {
         //Pathfinding basics. Finds a path from current position to a specific coordinate. Use this as last resort if
         //Vision alignment doesn't work for some reason or the robot is a bit shifted at the intake for some reason.
         
-        double coordinateX = 1.2;
-        double coordinateY = 1.1;
+        
         //DriverStation.Alliance ally = DriverStation.getAlliance().get(); 
         /*Translation2d a = new Translation2d(
                 DriverStation.getAlliance().get()==DriverStation.Alliance.Blue?coordinateX:17.54-coordinateX,
@@ -207,6 +206,21 @@ public class RobotContainer {
                 0.0 // Goal end velocity in meters/sec
                 //0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
         );*/
+        
+        WaitCommand visionAlignAndScoreLeft  = new WaitCommand(1.5); //TODO Replace with set of commands to align, score and drive backwards
+        WaitCommand visionAlignAndScoreRight = new WaitCommand(1.5); //TODO Replace with set of commands to align, score and drive backwards
+        /*SequentialCommandGroup visionAlignAndScoreLeft = new SequentialCommandGroup();
+        visionAlignAndScoreLeft.addCommands(VisionAlignCommandLeft);
+        visionAlignAndScoreLeft.addCommands(score);
+        visionAlignAndScoreLeft.addCommands(m_robotDrive.drive(0,-1,0,false));
+
+        SequentialCommandGroup visionAlignAndScoreRight = new SequentialCommandGroup();
+        visionAlignAndScoreRight.addCommands(VisionAlignCommandRight);
+        visionAlignAndScoreRight.addCommands(score);
+        visionAlignAndScoreRight.addCommands(m_robotDrive.drive(0,-1,0,false));
+        */
+        double coordinateX = 1.2;
+        double coordinateY = 1.1;
         AddEmergencyPathFinding testPath2 = new AddEmergencyPathFinding(coordinateX, coordinateY, 180,"Red");//angle is in degrees.
         testPath2.registerCommand("Last Align");//Register the pathfinding to a command.
         
@@ -236,7 +250,7 @@ public class RobotContainer {
         //SmartDashboard.putData("Auto Mode", autoChooser);
 
         
-
+        
         PathPlannerAuto[][] listOfAuto = {//Paths can be stored here.
                 {
                         new PathPlannerAuto("Testing that 1 command that should run the auto")
@@ -253,8 +267,8 @@ public class RobotContainer {
                         new PathPlannerAuto("Pathfinding"),
                 },
         };
-        
 
+        
         
         //auto.configurePathsAuto("This may or may not work");
         /*auto.addPathToEnd(
@@ -265,7 +279,6 @@ public class RobotContainer {
         //SequentialCommandGroup fullAuto = autos[0].configurePaths();
         // Set up auto routines
         autoChooser = new LoggedDashboardChooser<>("Auto Choices", AutoBuilder.buildAutoChooser());
-
         // Set up SysId routines
         autoChooser.addOption("Drive Wheel Radius Characterization", DriveCommands.wheelRadiusCharacterization(drive));
         autoChooser.addOption("Drive Simple FF Characterization", DriveCommands.feedforwardCharacterization(drive));
@@ -302,20 +315,34 @@ public class RobotContainer {
         SmartDashboard.putData("Test auto", new PathPlannerAuto("Test auto"));
         SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
         SmartDashboard.putData("COMP - Start Right (Our Barge) Side Auto", new PathPlannerAuto("COMP - Start Right (Our Barge) Side Auto"));
-        //SmartDashboard.putData("Test Combined Path",fullAuto);
+        
+        SmartDashboard.putData("Drop Coral",
+                //new RunCommand(() -> controller.setOutput(1, true))
+                //.andThen(
+                        new RunCommand(() -> SmartDashboard.putBoolean("is the button pressed?",controller.getRawButton(1)))
+                        //)
+        );
+
+        //SmartDashboard.putData("COMP - ",fullAuto);
         
         //NamedCommands.registerCommand("An auto",new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
-        int autoCount = listOfAuto.length;
+        /*int autoCount = listOfAuto.length;
         SequentialCommandGroup[] autos = new SequentialCommandGroup[autoCount];
-        
         for (int i = 0; i < listOfAuto.length; i++){
                 autos[i] = new SequentialCommandGroup();
                 for (int j = 0; j < listOfAuto[i].length; j++){
                 autos[i].addCommands(listOfAuto[i][j]);
                 }
                 SmartDashboard.putData("Auto "+Integer.toString(i),autos[i]);
-        }
-        autoChooser.addDefaultOption("Auto 0", autos[0]);//This will set the default auto that will run.
+                //SmartDashboard.setPersistent("Auto "+Integer.toString(i));
+        }*/
+        
+        /*autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+        (stream) -> isCompetition
+            ? stream.filter(auto -> auto.getName().startsWith("COMP"))
+            : stream
+        );*/
+        //autoChooser.addDefaultOption("Auto 0", autos[0]);//This will set the default auto that will run.
         // Configure the button bindings
         configureButtonBindings();
     }
@@ -337,6 +364,7 @@ public class RobotContainer {
 
 
         double slowSpeed = 0.4;
+
         new JoystickButton(controller, 3)
                 .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, slowSpeed, 0));
 
