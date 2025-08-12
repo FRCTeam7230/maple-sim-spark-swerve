@@ -233,6 +233,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Raise Elevator",elevUp);
     NamedCommands.registerCommand("Lower Elevator",elevDown);
     NamedCommands.registerCommand("Score",score);
+    NamedCommands.registerCommand("Shoot Alage", Commands.runOnce(drive::scoreAlgae, drive));
     //NamedCommands.registerCommand("Last Align",testPath2.runPathCommand());
         
         //So this command does run an auto as we desired. However, when making an auto with these commands, YOU MUST ADD A PATH BEFORE THAT. OTHERWISE IT WILL CRASH.
@@ -315,14 +316,15 @@ public class RobotContainer {
         SmartDashboard.putData("Test auto", new PathPlannerAuto("Test auto"));
         SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
         SmartDashboard.putData("COMP - Start Right (Our Barge) Side Auto", new PathPlannerAuto("COMP - Start Right (Our Barge) Side Auto"));
-        
+        SmartDashboard.putData("Drop Algae", Commands.runOnce(drive::scoreAlgae, drive));
         SmartDashboard.putData("Drop Coral",
                 //new RunCommand(() -> controller.setOutput(1, true))
                 //.andThen(
                         new RunCommand(() -> SmartDashboard.putBoolean("is the button pressed?",controller.getRawButton(1)))
                         //)
         );
-
+        SmartDashboard.putData("Clear entities", Commands.runOnce(drive::removeAllEntities,drive));
+        
         //SmartDashboard.putData("COMP - ",fullAuto);
         
         //NamedCommands.registerCommand("An auto",new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));

@@ -335,7 +335,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
                 new Translation2d(),
                 driveSimulation.getDriveTrainSimulatedChassisSpeedsFieldRelative(),
                 driveSimulation.getSimulatedDriveTrainPose().getRotation(),
-                Meters.of(0.4),
+                Meters.of(2),
                 MetersPerSecond.of(9),
                 Degrees.of(70)) // shooter angle
                 .withProjectileTrajectoryDisplayCallBack(
@@ -402,6 +402,11 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
     1);
 
         this.intakeSimulation.stopIntake();
+    }
+
+    
+    public void removeAllEntities() {
+        SimulatedArena.getInstance().clearGamePieces();
     }
 /*
     public void intakeAlgae() {

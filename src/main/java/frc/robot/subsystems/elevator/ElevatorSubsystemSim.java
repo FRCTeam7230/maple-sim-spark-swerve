@@ -74,7 +74,9 @@ public class ElevatorSubsystemSim extends SubsystemBase implements AutoCloseable
       m_mech2d.getRoot("Elevator Root", Units.inchesToMeters(5), Units.inchesToMeters(0.5));
   private final MechanismLigament2d m_elevatorMech2d =
       m_mech2dRoot.append(
-          new MechanismLigament2d("Elevator", m_elevatorSim.getPositionMeters(), 90));
+          new MechanismLigament2d("Elevator", m_elevatorSim.getPositionMeters(), 90)
+          
+          );//Graphics
 
     public ElevatorSubsystemSim() {
         m_encoder.setDistancePerPulse(Constants.ElevatorSimConstants.kElevatorEncoderDistPerPulse);
