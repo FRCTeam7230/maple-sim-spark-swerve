@@ -74,12 +74,16 @@ public class RobotContainer {
     private final Vision vision;
     private SwerveDriveSimulation driveSimulation = null;
 
+    private final Boolean controllerMode = true;
+
     private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
 
 
     // Controller
-    private final Joystick controller = new Joystick(0);
-
+    //private final XboxController controller = new XboxController(0);
+    //private final Joystick controller = new Joystick(0);
+    
+    private final GenericHID controller = controllerMode ? new XboxController(0) : new Joystick(0);
     // Dashboard inputs
     private final LoggedDashboardChooser<Command> autoChooser;
 
@@ -89,7 +93,6 @@ public class RobotContainer {
 
         
 
-        
         switch (Constants.currentMode) {
             case REAL:
                 // Real robot, instantiate hardware IO implementations
@@ -218,58 +221,106 @@ public class RobotContainer {
     double rotMult = 0.65;
 
     private void configureButtonBindings() {
-        // Default command, normal field-relative drive
-        // getX moves left/right.
-        // getY moves up/down.
-        drive.setDefaultCommand(DriveCommands.joystickDrive(
-                drive, () -> controller.getRawAxis(1) * speedMult, () -> controller.getRawAxis(0) * speedMult, () -> -controller.getRawAxis(2) * rotMult));
-
-        new JoystickButton(controller, 11).whileTrue(DriveCommands.toggleDrive());
-
-        double slowSpeed = 0.4;
-        new JoystickButton(controller, 3)
-                .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, slowSpeed, 0));
-
-                
-        new JoystickButton(controller, 4)
-        .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, -slowSpeed, 0));
-        new JoystickButton(controller, 5)
-        .whileTrue(DriveCommands.robotJoystickDrive(drive, slowSpeed, 0, 0));
-        new JoystickButton(controller, 6)
-        .whileTrue(DriveCommands.robotJoystickDrive(drive, -slowSpeed, 0, 0));
-
-        // Lock to 0° when A button is held
-        // new JoystickButton(controller, 3)
-        //         .whileTrue(DriveCommands.joystickDriveAtAngle(
-        //                 drive, () -> controller.getY(), () -> controller.getX(), () -> new Rotation2d()));
-
-        // Switch to X pattern when X button is pressed
-        // new JoystickButton(controller, 4).onTrue(Commands.runOnce(drive::stopWithX, drive));
-        // new JoystickButton(controller, 1).onTrue(Commands.runOnce(drive::scoreAlgae, drive));
-        new JoystickButton(controller, 1).onTrue(Commands.runOnce(drive::scoreCoral, drive));
-        // new JoystickButton(controller, 5).onTrue(Commands.runOnce(drive::spawnAlgae, drive));
-        // new JoystickButton(controller, 6).onTrue(Commands.runOnce(drive::spawnCoral, drive));
-
-        new JoystickButton(controller, 7)
-                .whileTrue(new RunCommand(
-                () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMinElevatorHeightMeters),
-                m_elevator));
-
-        new JoystickButton(controller, 8)
-                .whileTrue(new RunCommand(
-                () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxElevatorHeightMeters),
-                m_elevator));
-
         // Reset gyro / odometry
         final Runnable resetGyro = Constants.currentMode == Constants.Mode.SIM
-                ? () -> drive.resetOdometry(
-                        driveSimulation
-                                .getSimulatedDriveTrainPose()) // reset odometry to actual robot pose during simulation
-                : () -> drive.resetOdometry(
-                        new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
+        ? () -> drive.resetOdometry(
+                driveSimulation
+                        .getSimulatedDriveTrainPose()) // reset odometry to actual robot pose during simulation
+        : () -> drive.resetOdometry(
+                new Pose2d(drive.getPose().getTranslation(), new Rotation2d())); // zero gyro
+        
+        double slowSpeed = 0.4;
+        
+        if(controllerMode){
+            drive.setDefaultCommand(DriveCommands.joystickDrive(
+                drive, 
+                () -> controller.getRawAxis(/*change*/5) * speedMult, 
+                () -> controller.getRawAxis(/*change*/4) * speedMult, 
+                () -> -controller.getRawAxis(/*change*/0) * rotMult)
+                );
+            // fix this to a pov, povDown GenericHID
+            new JoystickButton(controller, /*change*/2).whileTrue(DriveCommands.toggleDrive()); //toggle Field Relative
 
-        new JoystickButton(controller, 2)
-                .onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+            new JoystickButton(controller, /*change*/5) 
+                .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, slowSpeed, 0));
+                    
+            new JoystickButton(controller, /*change*/6)
+                .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, -slowSpeed, 0));
+
+            /*  5 is slowmode forward, 6 is back
+            new JoystickButton(controller, 5)
+                .whileTrue(DriveCommands.robotJoystickDrive(drive, slowSpeed, 0, 0));
+            new JoystickButton(controller, 6)
+                .whileTrue(DriveCommands.robotJoystickDrive(drive, -slowSpeed, 0, 0));
+            */
+
+            // Lock to 0° when A button is held
+            /* 
+            if(controllerMode){
+                    // drive.setDefaultCommand(DriveCommands.joystickDriveAtAngle(
+                    //         drive, () -> controller.getRawAxis(1), () -> controller.getRawAxis(0), () -> new Rotation2d()));
+                    new JoystickButton(controller, 3)
+                            .whileTrue(DriveCommands.joystickDriveAtAngle(
+                                    drive, () -> controller.getRawAxis(1), () -> controller.getRawAxis(0), () -> new Rotation2d()));
+            }
+            */
+
+            new JoystickButton(controller, /*change*/3).onTrue(Commands.runOnce(drive::scoreCoral, drive)); //X
+
+            new JoystickButton(controller, 1) //A
+                    .whileTrue(new RunCommand(
+                    () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMinElevatorHeightMeters),
+                    m_elevator));
+
+            new JoystickButton(controller, 4) //Y
+                    .whileTrue(new RunCommand(
+                    () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxElevatorHeightMeters),
+                    m_elevator));
+
+            new JoystickButton(controller, 9) //press Rjoystick for reset gyro
+                    .onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+
+        } else {
+            // if we aren't using controller
+            drive.setDefaultCommand(DriveCommands.joystickDrive(
+                    drive, 
+                    () -> controller.getRawAxis(1) * speedMult, 
+                    () -> controller.getRawAxis(0) * speedMult, 
+                    () -> -controller.getRawAxis(2) * rotMult));
+            
+            new JoystickButton(controller, 11).whileTrue(DriveCommands.toggleDrive());
+
+            new JoystickButton(controller, 3)
+                    .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, slowSpeed, 0));
+
+                    
+            new JoystickButton(controller, 4)
+            .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, -slowSpeed, 0));
+            new JoystickButton(controller, 5)
+            .whileTrue(DriveCommands.robotJoystickDrive(drive, slowSpeed, 0, 0));
+            new JoystickButton(controller, 6)
+            .whileTrue(DriveCommands.robotJoystickDrive(drive, -slowSpeed, 0, 0));
+
+            // Switch to X pattern when X button is pressed
+            // new JoystickButton(controller, 4).onTrue(Commands.runOnce(drive::stopWithX, drive));
+            // new JoystickButton(controller, 1).onTrue(Commands.runOnce(drive::scoreAlgae, drive));
+            new JoystickButton(controller, 1).onTrue(Commands.runOnce(drive::scoreCoral, drive));
+            // new JoystickButton(controller, 5).onTrue(Commands.runOnce(drive::spawnAlgae, drive));
+            // new JoystickButton(controller, 6).onTrue(Commands.runOnce(drive::spawnCoral, drive));
+
+            new JoystickButton(controller, 7)
+                    .whileTrue(new RunCommand(
+                    () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMinElevatorHeightMeters),
+                    m_elevator));
+
+            new JoystickButton(controller, 8)
+                    .whileTrue(new RunCommand(
+                    () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxElevatorHeightMeters),
+                    m_elevator));
+
+            new JoystickButton(controller, 2)
+                    .onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
+        }
     }
 
     /**
