@@ -17,6 +17,12 @@ Simulation of real physics using maple-sim. Code is based on [AdvantageKit Spark
 12. Then keep the folder for assets in mind and drag maple-sim-spark-swerve/assets/Robot_Team7230 folder into the assets folder.
 13. Then right click the icon for the robot position and now you should be able to see Team7230 as a robot.
 
+Notes:
+- Switching from controller to joystick is in RobotContainer.java with the controllerMode variable. Everything is under a single if else statement that just doubles the code length.
+- Be sure to switch to teleop mode, and add in the joystick and system joysticks windows.
+- When running simulation do it normally, however drag in the XBox controller as the 0 controller or else it will not detect it.
+
+
 > Pray hard because this thing is held together by Mr.Tang, hopes, and dreams.
 > If doesn't work then debug for like 5 hours or something, good luck from 11:04PM 2025
 
@@ -41,3 +47,8 @@ Simulation of real physics using maple-sim. Code is based on [AdvantageKit Spark
 
 ## For step 11
 <img width="567" height="284" alt="image" src="https://github.com/user-attachments/assets/3f99b2f0-4acc-4311-9795-13d2a22c9b34" />
+
+## Dragging the XBox controller
+<img width="617" height="416" alt="image" src="https://github.com/user-attachments/assets/46a0af9b-5a60-4125-8436-a0f51416e498" />
+<img width="441" height="598" alt="image" src="https://github.com/user-attachments/assets/a739e99a-5208-4c0e-922f-fa7818cdb3cd" />
+
