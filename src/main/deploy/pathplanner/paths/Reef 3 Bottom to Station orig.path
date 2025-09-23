@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.76608606557377,
+        "x": 5.716,
         "y": 3.8772611769792764
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.710629981251752,
+        "x": 5.660543915677982,
         "y": 2.985643828191266
       },
       "isLocked": false,
@@ -48,12 +48,12 @@
     },
     {
       "anchor": {
-        "x": 1.14075,
-        "y": 0.9342499999999996
+        "x": 0.9373295454545455,
+        "y": 0.6197017045454549
       },
       "prevControl": {
-        "x": 1.4253478198086464,
-        "y": 1.0109865160123708
+        "x": 1.2219273652631921,
+        "y": 0.6964382205578261
       },
       "nextControl": null,
       "isLocked": false,
@@ -77,7 +77,7 @@
     "rotation": -125.37999999999998
   },
   "reversed": false,
-  "folder": "Reef to Station Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 180.0

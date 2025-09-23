@@ -367,9 +367,31 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
                 // The coral is ejected vertically downwards
                 Degrees.of(-90)));
     }
+    
+    public void giveCoralFromSpawner(Translation2d spawnerLocation, int coralAngle, int shootingAngle){
+        SimulatedArena.getInstance()
+        .addGamePieceProjectile(new ReefscapeCoralOnFly(
+                // Obtain robot position from drive simulation
+                spawnerLocation,
+                // The scoring mechanism is installed at (0.46, 0) (meters) on the robot
+                new Translation2d(0, 0),
+                // Obtain robot speed from drive simulation
+                new ChassisSpeeds(0,0,0),
+
+                new Rotation2d(Degrees.of(shootingAngle)),//-50 and 40.
+                
+                // Obtain robot facing from drive simulation
+                // The height at which the coral is ejected
+                //Meters.of(1.15),
+                Meters.of(2),
+                // The initial speed of the coral
+                MetersPerSecond.of(1),
+                // The coral is ejected 55 degrees from spawner
+                Degrees.of(coralAngle)));
+    }
 
     public void intakeCoralStart() {
-        this.intakeSimulation = IntakeSimulation.OverTheBumperIntake(
+        this.intakeSimulation = /*IntakeSimulation.OverTheBumperIntake(
             // Specify the type of game pieces that the intake can collect
             "Coral",
             // Specify the drivetrain to which this intake is attached
@@ -377,11 +399,23 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
             // Width of the intake
             Meters.of(0.4),
             // The extension length of the intake beyond the robot's frame (when activated)
-            Meters.of(0.2),
+            Meters.of(0),
             // The intake is mounted on the back side of the chassis
             IntakeSimulation.IntakeSide.FRONT,
             // The intake can hold up to 1 note
-    1);
+    1);*/
+        IntakeSimulation.InTheFrameIntake(
+            // Specify the type of game pieces that the intake can collect
+            "Coral",
+            // Specify the drivetrain to which this intake is attached
+            driveSimulation,
+            // Width of the intake
+            Meters.of(0.4),
+            // The extension length of the intake beyond the robot's frame (when activated)
+            // The intake is mounted on the back side of the chassis
+            IntakeSimulation.IntakeSide.FRONT,
+            // The intake can hold up to 1 note
+        1);
     
         this.intakeSimulation.startIntake();
     }

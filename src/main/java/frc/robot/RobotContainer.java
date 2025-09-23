@@ -13,68 +13,61 @@
 
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Rotation;
-import static frc.robot.subsystems.vision.VisionConstants.*;
+import static frc.robot.subsystems.vision.VisionConstants.camera0Name;
+import static frc.robot.subsystems.vision.VisionConstants.camera1Name;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera0;
+import static frc.robot.subsystems.vision.VisionConstants.robotToCamera1;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
+import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
+
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagDetection;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.LinearVelocity;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ProxyCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.commands.CreatePaths;
+import frc.robot.Constants.ElevatorConstants;
+//import frc.robot.commands.AlignWithLimelightSim;
 import frc.robot.commands.DriveCommands;
 import frc.robot.commands.ElevatorCommand;
-import frc.robot.subsystems.AddAutoSubsystem;
 import frc.robot.subsystems.AddEmergencyPathFinding;
-import frc.robot.subsystems.drive.*;
+import frc.robot.subsystems.drive.Drive;
+import frc.robot.subsystems.drive.DriveConstants;
+import frc.robot.subsystems.drive.GyroIO;
+import frc.robot.subsystems.drive.GyroIOPigeon2;
+import frc.robot.subsystems.drive.GyroIOSim;
+import frc.robot.subsystems.drive.ModuleIO;
+import frc.robot.subsystems.drive.ModuleIOSim;
+import frc.robot.subsystems.drive.ModuleIOSpark;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
-import frc.robot.subsystems.vision.*;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionConstants;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOLimelight;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
 import frc.robot.util.AIRobotInSimulation;
-
-import org.ironmaple.simulation.SimulatedArena;
-import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnField;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnFly;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnField;
-import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeCoralOnFly;
-import org.littletonrobotics.junction.Logger;
-import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.commands.PathfindingCommand;
-import com.pathplanner.lib.events.EventTrigger;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.path.Waypoint;
-import frc.robot.Constants.*;
-import frc.robot.subsystems.elevator.*;
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a "declarative" paradigm, very
  * little robot logic should actually be handled in the {@link Robot} periodic methods (other than the scheduler calls).
@@ -122,7 +115,6 @@ public class RobotContainer {
                 break;
             case SIM:
                 m_elevator.setGoal(0);
-
                 // create a maple-sim swerve drive simulation instance
                 this.driveSimulation =
                         new SwerveDriveSimulation(DriveConstants.mapleSimConfig, new Pose2d(3, 3, new Rotation2d()));
@@ -145,7 +137,8 @@ public class RobotContainer {
                                 camera0Name, robotToCamera0, driveSimulation::getSimulatedDriveTrainPose),
                         new VisionIOPhotonVisionSim(
                                 camera1Name, robotToCamera1, driveSimulation::getSimulatedDriveTrainPose));
-
+                
+                
                 AIRobotInSimulation.startOpponentRobotSimulations();
 
                 break;
@@ -206,8 +199,7 @@ public class RobotContainer {
                 0.0 // Goal end velocity in meters/sec
                 //0.0 // Rotation delay distance in meters. This is how far the robot should travel before attempting to rotate.
         );*/
-        
-        WaitCommand visionAlignAndScoreLeft  = new WaitCommand(1.5); //TODO Replace with set of commands to align, score and drive backwards
+        //AlignWithLimelightSim visionAlignAndScoreLeft  = new AlignWithLimelightSim(drive.getPose()); //TODO Replace with set of commands to align, score and drive backwards
         WaitCommand visionAlignAndScoreRight = new WaitCommand(1.5); //TODO Replace with set of commands to align, score and drive backwards
         /*SequentialCommandGroup visionAlignAndScoreLeft = new SequentialCommandGroup();
         visionAlignAndScoreLeft.addCommands(VisionAlignCommandLeft);
@@ -234,6 +226,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("Lower Elevator",elevDown);
     NamedCommands.registerCommand("Score",score);
     NamedCommands.registerCommand("Shoot Alage", Commands.runOnce(drive::scoreAlgae, drive));
+    //NamedCommands.registerCommand("Vision Align and Score Left", Commands.run(visionAlignAndScoreLeft.followPathToReef()))
+    NamedCommands.registerCommand("Vision Align and Score Left", new WaitCommand(0.1));
+   /// SmartDashboard.
+    //SmartDashboard.putNumber("Testing AprilTag detection sim",visionAlignAndScoreLeft.findNearestAprilTag());
+
+
     //NamedCommands.registerCommand("Last Align",testPath2.runPathCommand());
         
         //So this command does run an auto as we desired. However, when making an auto with these commands, YOU MUST ADD A PATH BEFORE THAT. OTHERWISE IT WILL CRASH.
@@ -243,10 +241,10 @@ public class RobotContainer {
         NamedCommands.registerCommand("Testing that 1 command that should run an auto", new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
 
         // Use event markers as triggers
-        new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
+        //new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
         //new EventTrigger("Dance").onTrue(Commands.print("This will not be a command where the robot will spin around itself."));
-        new EventTrigger("Raise Elevator").onTrue(elevUp);
-        new EventTrigger("Lower Elevator").onTrue(elevDown);
+        //new EventTrigger("Raise Elevator").onTrue(elevUp);
+        //new EventTrigger("Lower Elevator").onTrue(elevDown);
         //autoChooser = AutoBuilder.buildAutoChooser(); // Default auto will be `Commands.none()`
         //SmartDashboard.putData("Auto Mode", autoChooser);
 
@@ -271,6 +269,7 @@ public class RobotContainer {
 
         
         
+  
         //auto.configurePathsAuto("This may or may not work");
         /*auto.addPathToEnd(
                 new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station")
@@ -300,6 +299,12 @@ public class RobotContainer {
         SmartDashboard.putData("Reef 5 to station left", new PathPlannerAuto("Reef 5 to station left"));
         SmartDashboard.putData("Reef 6 to station right", new PathPlannerAuto("Reef 6 to station right"));
         SmartDashboard.putData("Reef 6 to station left", new PathPlannerAuto("Reef 6 to station left"));
+        
+        SmartDashboard.putData("Coral 6 Path 3", new PathPlannerAuto("Coral 6 Path 3"));
+        SmartDashboard.putData("Coral 6 Path 2", new PathPlannerAuto("Coral 6 Path 2"));
+        SmartDashboard.putData("Coral 5 Cycle RIght", new PathPlannerAuto("Coral 5 Cycle RIght"));
+        SmartDashboard.putData("Reef 5 to Station left", new PathPlannerAuto("Reef 5 to Station left"));
+        SmartDashboard.putData("Coral 5 Cycle 1", new PathPlannerAuto("Coral 5 Cycle 1"));
 
         SmartDashboard.putData("Coral Cycle 1", new PathPlannerAuto("Coral Cycle 1"));
         SmartDashboard.putData("Coral 1 Cycle 2", new PathPlannerAuto("Coral 1 Cycle 2"));
@@ -314,9 +319,14 @@ public class RobotContainer {
         SmartDashboard.putData("Coral 6 Cycle", new PathPlannerAuto("Coral 6 Cycle 1"));
         //SmartDashboard.putData("Coral 6 Cycle 1", new PathPlannerAuto("Coral 6 Cycle 1"));
         SmartDashboard.putData("Test auto", new PathPlannerAuto("Test auto"));
+        SmartDashboard.putData("COMP - Start Left (Processor) Side", new PathPlannerAuto("COMP - Start Left (Processor) Side"));
+        
         SmartDashboard.putData("COMP - Start Center to Right (Our Barge) Coral Station", new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));
         SmartDashboard.putData("COMP - Start Right (Our Barge) Side Auto", new PathPlannerAuto("COMP - Start Right (Our Barge) Side Auto"));
+        SmartDashboard.putData("Spawn Coral", Commands.runOnce(drive::scoreCoral, drive));
         SmartDashboard.putData("Drop Algae", Commands.runOnce(drive::scoreAlgae, drive));
+        SmartDashboard.putData("Start Intake", Commands.runOnce(drive::intakeCoralStart, drive));
+        SmartDashboard.putData("Stop Intake", Commands.runOnce(drive::intakeCoralStop, drive));
         SmartDashboard.putData("Drop Coral",
                 //new RunCommand(() -> controller.setOutput(1, true))
                 //.andThen(
@@ -325,6 +335,29 @@ public class RobotContainer {
         );
         SmartDashboard.putData("Clear entities", Commands.runOnce(drive::removeAllEntities,drive));
         
+        Runnable moveToSpawner1 = () -> drive.giveCoralFromSpawner(new Translation2d(0.8,7.7),90-55+90,-50);
+        Runnable moveToSpawner2 = () -> drive.giveCoralFromSpawner(new Translation2d(17.55-0.8,8.05-7.7),-90-55,-50);
+        Runnable moveToSpawner3 = () -> drive.giveCoralFromSpawner(new Translation2d(0.8,8.05-7.7),180-45,220);
+        Runnable moveToSpawner4 = () -> drive.giveCoralFromSpawner(new Translation2d(17.55-0.8,7.7),180-(-90-55),220);
+        
+        //create a command 
+        
+        //Add a new command in smartdashboard
+
+        SequentialCommandGroup spawnDaCorals = new SequentialCommandGroup(
+                Commands.runOnce(moveToSpawner1,drive),
+                Commands.runOnce(moveToSpawner2,drive),
+                Commands.runOnce(moveToSpawner3,drive),
+                Commands.runOnce(moveToSpawner4,drive)
+        );
+        SmartDashboard.putData("Run intake",
+                spawnDaCorals
+        );
+        SmartDashboard.putData("Stop intake",Commands.runOnce(() -> new WaitCommand(0)));
+
+        
+
+
         //SmartDashboard.putData("COMP - ",fullAuto);
         
         //NamedCommands.registerCommand("An auto",new PathPlannerAuto("COMP - Start Center to Right (Our Barge) Coral Station"));

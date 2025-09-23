@@ -20,6 +20,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.ElevatorSim;
@@ -74,6 +75,12 @@ public class ElevatorSubsystem extends SubsystemBase
       m_mech2dRoot.append(
           new MechanismLigament2d("Elevator", m_elevatorSim.getPositionMeters(), 80));
 
+    private final Mechanism2d m_mechArm = 
+      new Mechanism2d(Units.inchesToMeters(51), Units.inchesToMeters(10));
+  private final MechanismRoot2d m_climberArmRoot2d = m_mechArm.getRoot("Arm Root", Units.inchesToMeters(10), Units.inchesToMeters(51));
+  private final MechanismLigament2d m_climberArm2d = m_climberArmRoot2d.append(
+        new MechanismLigament2d("Arm", 30, 20)//Change the angle to the simulation's updated angle/
+      );
   /**
    * Subsystem constructor.
    */
@@ -96,6 +103,7 @@ public class ElevatorSubsystem extends SubsystemBase
     // Publish Mechanism2d to SmartDashboard
     // To view the Elevator visualization, select Network Tables -> SmartDashboard -> Elevator Sim
     SmartDashboard.putData("Elevator Sim", m_mech2d);
+    SmartDashboard.putData(" Sim", m_mechArm);
   }
 
   /**
@@ -174,7 +182,8 @@ public class ElevatorSubsystem extends SubsystemBase
    */
   public void stop()
   {
-    m_motor.set(0.0);
+    //m_motor.set(0.0);
+    
   }
 
   /**
@@ -184,6 +193,7 @@ public class ElevatorSubsystem extends SubsystemBase
   {
     // Update elevator visualization with position
     m_elevatorMech2d.setLength(RobotBase.isSimulation() ? m_elevatorSim.getPositionMeters() : m_encoder.getPosition());
+    
   }
 
 

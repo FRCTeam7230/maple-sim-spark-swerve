@@ -32,12 +32,12 @@
     },
     {
       "anchor": {
-        "x": 1.14075,
-        "y": 0.9342499999999996
+        "x": 0.9373295454545455,
+        "y": 0.6197017045454549
       },
       "prevControl": {
-        "x": 2.488382495674283,
-        "y": 1.403989901702255
+        "x": 2.2849620411288285,
+        "y": 1.0894416062477104
       },
       "nextControl": null,
       "isLocked": false,
@@ -61,7 +61,7 @@
     "rotation": -125.37999999999998
   },
   "reversed": false,
-  "folder": "Reef to Station Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 119.99999999999999

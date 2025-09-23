@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.14075,
-        "y": 0.9342499999999996
+        "x": 0.9373295454545455,
+        "y": 0.6197017045454549
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.05390024267338,
-        "y": 1.5845819603474367
+        "x": 1.8504797881279256,
+        "y": 1.270033664892892
       },
       "isLocked": false,
       "linkedName": "Coral Station 2"
@@ -61,7 +61,7 @@
     "rotation": 119.99999999999999
   },
   "reversed": false,
-  "folder": "Station to Reef Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": -125.37999999999998

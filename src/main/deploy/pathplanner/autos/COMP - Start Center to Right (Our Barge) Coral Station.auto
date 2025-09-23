@@ -5,22 +5,21 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Start to Reef 3 Top"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Raise Elevator"
-                }
-              }
-            ]
+            "pathName": "Start to Reef 3 Top"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Raise Elevator"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
@@ -30,47 +29,45 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Score"
-                }
-              },
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 2.0
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Score for Reef 3 Top"
-                }
-              }
-            ]
+            "name": "Score"
           }
         },
         {
-          "type": "parallel",
+          "type": "wait",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Lower Elevator"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "Reef 3 Top to Station"
-                }
-              }
-            ]
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Score for Reef 3 Top"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Lower Elevator"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Push for Auto RP"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Auto RP To Coral Station 2"
           }
         }
       ]

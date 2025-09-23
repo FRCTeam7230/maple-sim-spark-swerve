@@ -67,6 +67,10 @@ public class ElevatorSubsystemSim extends SubsystemBase implements AutoCloseable
   private final EncoderSim m_encoderSim = new EncoderSim(m_encoder);
   private final PWMSim m_motorSim = new PWMSim(m_motor);
 
+  private final Mechanism2d m_arm = new Mechanism2d(Units.inchesToMeters(2), Units.inchesToMeters(10));
+
+
+
   // Create a Mechanism2d visualization of the elevator
   private final Mechanism2d m_mech2d =
       new Mechanism2d(Units.inchesToMeters(10), Units.inchesToMeters(51));
@@ -74,9 +78,15 @@ public class ElevatorSubsystemSim extends SubsystemBase implements AutoCloseable
       m_mech2d.getRoot("Elevator Root", Units.inchesToMeters(5), Units.inchesToMeters(0.5));
   private final MechanismLigament2d m_elevatorMech2d =
       m_mech2dRoot.append(
-          new MechanismLigament2d("Elevator", m_elevatorSim.getPositionMeters(), 90)
-          
-          );//Graphics
+          new MechanismLigament2d("Elevator", m_elevatorSim.getPositionMeters(), 90)  
+        );//Graphics
+
+  private final Mechanism2d m_mechArm = 
+      new Mechanism2d(Units.inchesToMeters(51), Units.inchesToMeters(10));
+  private final MechanismRoot2d m_climberArmRoot2d = m_mechArm.getRoot("Arm Root", Units.inchesToMeters(10), Units.inchesToMeters(51));
+  private final MechanismLigament2d m_climberArm2d = m_climberArmRoot2d.append(
+        new MechanismLigament2d("Arm", 30, 20)//Change the angle to the simulation's updated angle/
+      );
 
     public ElevatorSubsystemSim() {
         m_encoder.setDistancePerPulse(Constants.ElevatorSimConstants.kElevatorEncoderDistPerPulse);
@@ -84,6 +94,8 @@ public class ElevatorSubsystemSim extends SubsystemBase implements AutoCloseable
         // Publish Mechanism2d to SmartDashboard
         // To view the Elevator visualization, select Network Tables -> SmartDashboard -> Elevator Sim
         SmartDashboard.putData("Elevator Sim", m_mech2d);
+        SmartDashboard.putData("Climber Sim Test", m_mechArm);
+//SmartDashboard.putData("Elevator Sim", m_);
     }
 
     @Override
@@ -142,7 +154,7 @@ public class ElevatorSubsystemSim extends SubsystemBase implements AutoCloseable
 
   /** Stop the control loop and motor output. */
   public void stop() {
-    m_motor.set(0.0);
+   // m_motor.set(0.0);
   }
 
   /** Reset Exponential profile to begin from current position on enable. */
@@ -154,6 +166,8 @@ public class ElevatorSubsystemSim extends SubsystemBase implements AutoCloseable
   public void updateTelemetry() {
     // Update elevator visualization with position
     m_elevatorMech2d.setLength(m_encoder.getDistance());
+    m_climberArm2d.setAngle(30);//We need an encoder here.
+    m_climberArm2d.setLength(3);//We need an encoder here.
   }
 
   @Override

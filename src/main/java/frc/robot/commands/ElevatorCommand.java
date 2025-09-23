@@ -35,7 +35,7 @@ public class ElevatorCommand extends Command {
     }
     @Override
     public void end(boolean interrupted){
-        m_elev.stop();
+        //m_elev.stop();
     }
     @Override 
     public boolean isFinished(){

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 4.015881147540983,
-        "y": 2.84421106557377
+        "x": 3.7991100993377485,
+        "y": 2.441432119205299
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.118260775712046,
-        "y": 2.963779167679117
+        "x": 1.9014897275088112,
+        "y": 2.5610002213106458
       },
       "isLocked": false,
       "linkedName": "reef 5 right"
     },
     {
       "anchor": {
-        "x": 1.14075,
-        "y": 0.9342499999999996
+        "x": 0.9373295454545455,
+        "y": 0.6197017045454549
       },
       "prevControl": {
-        "x": 2.11640934085414,
-        "y": 1.5571704446968373
+        "x": 1.9129888863086855,
+        "y": 1.2426221492422926
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
     "rotation": -125.37999999999998
   },
   "reversed": false,
-  "folder": "Reef to Station Paths",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 59.99999999999999
