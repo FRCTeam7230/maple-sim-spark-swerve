@@ -51,8 +51,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ElevatorConstants;
 //import frc.robot.commands.AlignWithLimelightSim;
 import frc.robot.commands.DriveCommands;
-import frc.robot.commands.ElevatorCommand;
-import frc.robot.subsystems.AddEmergencyPathFinding;
+//import frc.robot.subsystems.AddEmergencyPathFinding;
 import frc.robot.subsystems.drive.Drive;
 import frc.robot.subsystems.drive.DriveConstants;
 import frc.robot.subsystems.drive.GyroIO;
@@ -157,14 +156,13 @@ public class RobotContainer {
         }
 
         //TODO: Test this on advantage scope.
-
-        ElevatorCommand elevUp = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters);
-        ElevatorCommand elevDown = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMinElevatorHeightMeters);
-        //ProxyCommand a = new ProxyCommand(elevUp);//What if we use proxy?
-        ElevatorCommand score = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kScoreElevatorHeightMeters);
+        /*
+         * Move the elevator up
+         * Move the elevator down
+         * Move the elevator to scoring height (use the constants)
+         * Move the elevator to a certain height. (choose a value)
+         */
         
-        ElevatorCommand elevUpToL3 = new ElevatorCommand(m_elevator,Constants.ElevatorConstants.kMaxElevatorHeightMeters-1);
-        ElevatorCommand L3Score = new ElevatorCommand(m_elevator, Constants.ElevatorConstants.kMaxElevatorHeightMeters-1.1);
         //CreatePaths path = new CreatePaths(auto);
         //path.makeThePaths();
         //Pathfinding basics. Finds a path from current position to a specific coordinate. Use this as last resort if
@@ -213,8 +211,8 @@ public class RobotContainer {
         */
         double coordinateX = 1.2;
         double coordinateY = 1.1;
-        AddEmergencyPathFinding testPath2 = new AddEmergencyPathFinding(coordinateX, coordinateY, 180,"Red");//angle is in degrees.
-        testPath2.registerCommand("Last Align");//Register the pathfinding to a command.
+        //AddEmergencyPathFinding testPath2 = new AddEmergencyPathFinding(coordinateX, coordinateY, 180,"Red");//angle is in degrees.
+        //testPath2.registerCommand("Last Align");//Register the pathfinding to a command.
         
         NamedCommands.registerCommand("marker1", Commands.print("Passed marker 1"));
     NamedCommands.registerCommand("marker2", Commands.print("Passed marker 2"));
@@ -222,9 +220,6 @@ public class RobotContainer {
     NamedCommands.registerCommand("Lift the Elevator",new WaitCommand(5));//We can add commands like this, and yes it works as long as you can bear the 5 second wait.
     NamedCommands.registerCommand("Dance", Commands.print("This will not be a command where the robot will spin around itself."));
 
-    NamedCommands.registerCommand("Raise Elevator",elevUp);
-    NamedCommands.registerCommand("Lower Elevator",elevDown);
-    NamedCommands.registerCommand("Score",score);
     NamedCommands.registerCommand("Shoot Alage", Commands.runOnce(drive::scoreAlgae, drive));
     //NamedCommands.registerCommand("Vision Align and Score Left", Commands.run(visionAlignAndScoreLeft.followPathToReef()))
     NamedCommands.registerCommand("Vision Align and Score Left", new WaitCommand(0.1));
@@ -432,6 +427,7 @@ public class RobotContainer {
                 .whileTrue(new RunCommand(
                 () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxElevatorHeightMeters),
                 m_elevator));
+        
 
         // Reset gyro / odometry
         final Runnable resetGyro = Constants.currentMode == Constants.Mode.SIM
