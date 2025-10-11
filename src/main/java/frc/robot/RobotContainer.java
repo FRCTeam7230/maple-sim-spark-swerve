@@ -245,23 +245,7 @@ public class RobotContainer {
 
         
         
-        PathPlannerAuto[][] listOfAuto = {//Paths can be stored here.
-                {
-                        new PathPlannerAuto("Testing that 1 command that should run the auto")
-                },
-                {
-                        new PathPlannerAuto("Start Right Side Part 1"),
-                        new PathPlannerAuto("Start Right Side Part 2"),
-                },
-                {
-                        new PathPlannerAuto("Start Left Side Part 1"),
-                        new PathPlannerAuto("Start Left Side Part 2"),
-                },
-                {
-                        new PathPlannerAuto("Pathfinding"),
-                },
-        };
-
+        
         
         
   
@@ -414,6 +398,9 @@ public class RobotContainer {
         // Switch to X pattern when X button is pressed
         // new JoystickButton(controller, 4).onTrue(Commands.runOnce(drive::stopWithX, drive));
         // new JoystickButton(controller, 1).onTrue(Commands.runOnce(drive::scoreAlgae, drive));
+
+        
+
         new JoystickButton(controller, 1).onTrue(Commands.runOnce(drive::scoreCoral, drive));
         // new JoystickButton(controller, 5).onTrue(Commands.runOnce(drive::spawnAlgae, drive));
         // new JoystickButton(controller, 6).onTrue(Commands.runOnce(drive::spawnCoral, drive));
