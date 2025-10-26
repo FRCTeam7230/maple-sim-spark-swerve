@@ -19,23 +19,33 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.drive.*;
@@ -75,6 +85,7 @@ public class RobotContainer {
     private SwerveDriveSimulation driveSimulation = null;
 
     private final Boolean controllerMode = true;
+    private final Boolean rotateMode = true;
 
     private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
 
@@ -232,20 +243,22 @@ public class RobotContainer {
         double slowSpeed = 0.4;
         
         if(controllerMode){
-            drive.setDefaultCommand(DriveCommands.joystickDrive(
-                drive, 
-                () -> controller.getRawAxis(/*change*/5) * speedMult, 
-                () -> controller.getRawAxis(/*change*/4) * speedMult, 
-                () -> -controller.getRawAxis(/*change*/0) * rotMult)
+            drive.setDefaultCommand(DriveCommands.joystickDriveAtAngle(
+                drive, () -> -controller.getRawAxis(1), () -> -controller.getRawAxis(0), () -> controller.getRawAxis(4), () -> controller.getRawAxis(5))
                 );
+
             // fix this to a pov, povDown GenericHID
-            new JoystickButton(controller, /*change*/2).whileTrue(DriveCommands.toggleDrive()); //toggle Field Relative
+            new JoystickButton(controller, /*change*/2)
+                .whileTrue(DriveCommands.toggleDrive().alongWith(Commands.run(() -> controller.setRumble(
+                        RumbleType.kBothRumble, 0.5)))); //toggle Field Relative
 
             new JoystickButton(controller, /*change*/5) 
                 .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, slowSpeed, 0));
                     
             new JoystickButton(controller, /*change*/6)
                 .whileTrue(DriveCommands.robotJoystickDrive(drive, 0, -slowSpeed, 0));
+            if(rotateMode){
+            }
 
             /*  5 is slowmode forward, 6 is back
             new JoystickButton(controller, 5)
@@ -255,17 +268,34 @@ public class RobotContainer {
             */
 
             // Lock to 0° when A button is held
-            /* 
+            /*
             if(controllerMode){
                     // drive.setDefaultCommand(DriveCommands.joystickDriveAtAngle(
                     //         drive, () -> controller.getRawAxis(1), () -> controller.getRawAxis(0), () -> new Rotation2d()));
-                    new JoystickButton(controller, 3)
+                    new JoystickButton(controller, 6)
                             .whileTrue(DriveCommands.joystickDriveAtAngle(
-                                    drive, () -> controller.getRawAxis(1), () -> controller.getRawAxis(0), () -> new Rotation2d()));
-            }
-            */
+                                    drive, () -> controller.getRawAxis(1), () -> controller.getRawAxis(0), () -> controller.getRawAxis(4), () -> controller.getRawAxis(5)));
+                    PIDController angleController = new PIDController(
+                        18.0, 0.0, 0.0
+                        //new TrapezoidProfile.Constraints(ANGLE_MAX_VELOCITY, ANGLE_MAX_ACCELERATION));
+                        );
+                    angleController.enableContinuousInput(-Math.PI, Math.PI);
+                    double omega = angleController.calculate(drive.getRotation().getRadians(), Math.atan2(controller.getRawAxis(5), controller.getRawAxis(4)));
+                    ChassisSpeeds speeds = new ChassisSpeeds(0, 0, omega);
+                    boolean isFlipped = DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red;
+                    speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds,isFlipped 
+                                                                ? drive.getRotation().plus(new Rotation2d(Math.PI))
+                                                                : drive.getRotation());
+                        drive.runVelocity(speeds);
+            } */
+            
 
-            new JoystickButton(controller, /*change*/3).onTrue(Commands.runOnce(drive::scoreCoral, drive)); //X
+            new Trigger(() -> controller.getRawAxis(/*change*/3) > 0.5)
+                .onTrue(
+                        Commands.runOnce(drive::scoreCoral, drive)
+                );
+
+            //new JoystickButton(controller, /*change*/3).onTrue(Commands.runOnce(drive::scoreCoral, drive)); //X
 
             new JoystickButton(controller, 1) //A
                     .whileTrue(new RunCommand(
