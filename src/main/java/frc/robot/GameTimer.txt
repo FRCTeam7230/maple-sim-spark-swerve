@@ -1,0 +1,15 @@
+package frc.robot;
+
+import edu.wpi.first.wpilibj.Timer;
+
+public class GameTimer {
+    Timer gameTimer = new Timer();
+    public GameTimer(){
+        
+    }
+    public void startAutonomous(){
+        
+        gameTimer.start();
+
+    }
+}

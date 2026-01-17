@@ -36,8 +36,8 @@ public class Vision extends SubsystemBase {
     private final VisionIOInputsAutoLogged[] inputs;
     private final Alert[] disconnectedAlerts;
 
-    public Vision(VisionConsumer consumer, VisionIO... io) {
-        this.consumer = consumer;
+    public Vision(VisionConsumer consumer, VisionIO... io) {///... allows you to add multiple instances of Vision IO.
+        this.consumer = consumer; 
         this.io = io;
 
         // Initialize inputs
@@ -62,7 +62,6 @@ public class Vision extends SubsystemBase {
     public Rotation2d getTargetX(int cameraIndex) {
         return inputs[cameraIndex].latestTargetObservation.tx();
     }
-
     @Override
     public void periodic() {
         for (int i = 0; i < io.length; i++) {
@@ -86,7 +85,7 @@ public class Vision extends SubsystemBase {
             List<Pose3d> robotPoses = new LinkedList<>();
             List<Pose3d> robotPosesAccepted = new LinkedList<>();
             List<Pose3d> robotPosesRejected = new LinkedList<>();
-
+            List<Pose3d> tagTrajectory = new LinkedList<>();
             // Add tag poses
             for (int tagId : inputs[cameraIndex].tagIds) {
                 var tagPose = aprilTagLayout.getTagPose(tagId);
@@ -155,10 +154,12 @@ public class Vision extends SubsystemBase {
             Logger.recordOutput(
                     "Vision/Camera" + Integer.toString(cameraIndex) + "/RobotPosesRejected",
                     robotPosesRejected.toArray(new Pose3d[robotPosesRejected.size()]));
+
             allTagPoses.addAll(tagPoses);
             allRobotPoses.addAll(robotPoses);
             allRobotPosesAccepted.addAll(robotPosesAccepted);
             allRobotPosesRejected.addAll(robotPosesRejected);
+            
         }
 
         // Log summary data
@@ -171,7 +172,17 @@ public class Vision extends SubsystemBase {
                 "Vision/Summary/RobotPosesRejected",
                 allRobotPosesRejected.toArray(new Pose3d[allRobotPosesRejected.size()]));
     }
-
+    public List<Pose3d> getAllTags(int cameraIndex){//This would be more efficient if I could extract information from Logger or from periodic method.
+        List<Pose3d> tagPoses = new LinkedList<>();
+        // Add tag poses
+        for (int tagId : inputs[cameraIndex].tagIds) {
+            var tagPose = aprilTagLayout.getTagPose(tagId);
+            if (tagPose.isPresent()) {
+                tagPoses.add(tagPose.get());
+            }
+        }
+        return tagPoses;
+    }
     @FunctionalInterface
     public interface VisionConsumer {
         void accept(Pose2d visionRobotPoseMeters, double timestampSeconds, Matrix<N3, N1> visionMeasurementStdDevs);

@@ -42,6 +42,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import org.dyn4j.geometry.Rotation;
+import org.littletonrobotics.junction.Logger;
 
 public class DriveCommands {
         private static final double DEADBAND = 0.1;
@@ -98,7 +99,13 @@ public class DriveCommands {
                 public static boolean getFieldRelative(){
                         return IS_FIELD_RELATIVE;
                 }
-        
+                
+                // public static Command robotDrive(Drive drive, double xSupplier, double ySupplier, double omegaSupplier){
+                //         return Commands.run(()->{
+
+                //         })
+                // }
+
                 public static Command joystickDrive(
                                 Drive drive, DoubleSupplier xSupplier, DoubleSupplier ySupplier, DoubleSupplier omegaSupplier) {
                         return Commands.run(
@@ -133,7 +140,7 @@ public class DriveCommands {
                                                                                         .plus(new Rotation2d(Math.PI))
                                                                                         : drive.getRotation());
                                                 }
-        
+                                                Logger.recordOutput("Vision/Align/Does Aligning Work?",speeds);
                                                 drive.runVelocity(speeds);
         
                                                 

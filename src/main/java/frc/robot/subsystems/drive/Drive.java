@@ -41,10 +41,12 @@ import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.Mode;
 import frc.robot.subsystems.vision.Vision;
 import frc.robot.util.LocalADStarAK;
@@ -86,7 +88,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
 
     public SwerveDriveSimulation driveSimulation;
     private IntakeSimulation intakeSimulation;
-    
+    private IntakeSimulation algaeIntakeSimulation;
     public Drive(
             GyroIO gyroIO,
             ModuleIO flModuleIO,
@@ -130,6 +132,8 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
                 new SysIdRoutine.Config(
                         null, null, null, (state) -> Logger.recordOutput("Drive/SysIdState", state.toString())),
                 new SysIdRoutine.Mechanism((voltage) -> runCharacterization(voltage.in(Volts)), null, this));
+   
+        
     }
 
     @Override
@@ -137,6 +141,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
         odometryLock.lock(); // Prevents odometry updates while reading data
         gyroIO.updateInputs(gyroInputs);
         Logger.processInputs("Drive/Gyro", gyroInputs);
+        //Logger.recordOutput("a", algaeIntakeSimulation.);
         for (var module : modules) {
             module.periodic();
         }
@@ -328,6 +333,7 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
     }
 
     public void scoreAlgae() {
+        if (algaeIntakeSimulation.obtainGamePieceFromIntake()){
         ReefscapeAlgaeOnFly.setHitNetCallBack(() -> System.out.println("ALGAE hits NET!"));
         SimulatedArena.getInstance()
             .addGamePieceProjectile(new ReefscapeAlgaeOnFly(
@@ -340,7 +346,10 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
                 Degrees.of(70)) // shooter angle
                 .withProjectileTrajectoryDisplayCallBack(
                     (poses) -> Logger.recordOutput("successfulShotsTrajectory", poses.toArray(Pose3d[]::new)),
-                    (poses) -> Logger.recordOutput("missedShotsTrajectory", poses.toArray(Pose3d[]::new))));
+                    (poses) -> Logger.recordOutput("missedShotsTrajectory", poses.toArray(Pose3d[]::new)))
+            .enableBecomesGamePieceOnFieldAfterTouchGround()
+                    );
+        }
     }
 
     public void spawnCoral() {
@@ -348,8 +357,50 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
             // We must specify a heading since the coral is a tube
             driveSimulation.getSimulatedDriveTrainPose()));
     }
+    public void spawnOnIntake(IntakeConstants.Side reef, IntakeConstants.Side barge){
+        if (reef==IntakeConstants.Side.BLUE&&barge==IntakeConstants.Side.BLUE){
+            SimulatedArena.getInstance().addGamePieceProjectile(new ReefscapeCoralOnFly(
+                new Translation2d(1,7.5 ), 
+                new Translation2d(0 ,0), 
+                new ChassisSpeeds(), 
+                new Rotation2d(-50 *Math.PI/180), 
+                Meters.of(1.2), 
+                MetersPerSecond.of(1), 
+                Degrees.of(-50)));
+        } else if (reef==IntakeConstants.Side.BLUE&&barge==IntakeConstants.Side.RED){
+            SimulatedArena.getInstance().addGamePieceProjectile(new ReefscapeCoralOnFly(
+                new Translation2d(1,0.5 ), 
+                new Translation2d(0 ,0), 
+                new ChassisSpeeds(), 
+                new Rotation2d(50 *Math.PI/180), 
+                Meters.of(1.2), 
+                MetersPerSecond.of(1), 
+                Degrees.of(50)));
+        } else if (reef==IntakeConstants.Side.RED&&barge==IntakeConstants.Side.RED){
+            SimulatedArena.getInstance().addGamePieceProjectile(new ReefscapeCoralOnFly(
+                new Translation2d(16.6,0.5 ), 
+                new Translation2d(0 ,0), 
+                new ChassisSpeeds(), 
+                new Rotation2d(130 *Math.PI/180), 
+                Meters.of(1.2), 
+                MetersPerSecond.of(1), 
+                Degrees.of(-130)));
+        } else if (reef==IntakeConstants.Side.RED&&barge==IntakeConstants.Side.BLUE){
+            SimulatedArena.getInstance().addGamePieceProjectile(new ReefscapeCoralOnFly(
+                new Translation2d(16.6,7.5 ), 
+                new Translation2d(0 ,0), 
+                new ChassisSpeeds(), 
+                new Rotation2d(-130 *Math.PI/180), 
+                Meters.of(1.2), 
+                MetersPerSecond.of(1), 
+                Degrees.of(-130)));
+        } else {
+            //whaaa
+        }
+    }
 
     public void scoreCoral() {
+        if (this.intakeSimulation.obtainGamePieceFromIntake()){//the method automatically removes the coral.
         SimulatedArena.getInstance()
         .addGamePieceProjectile(new ReefscapeCoralOnFly(
                 // Obtain robot position from drive simulation
@@ -366,46 +417,60 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
                 MetersPerSecond.of(1),
                 // The coral is ejected vertically downwards
                 Degrees.of(-90)));
+        }
     }
-
+    public void initalizeIntake(){
+        intakeSimulation = IntakeSimulation.OverTheBumperIntake(
+                    // Specify the type of game pieces that the intake can collect
+                    "Coral",
+                    // Specify the drivetrain to which this intake is attached
+                    driveSimulation,
+                    // Width of the intake
+                    Meters.of(0.4),
+                    // The extension length of the intake beyond the robot's frame (when activated)
+                    Meters.of(0.2),
+                    // The intake is mounted on the back side of the chassis
+                    IntakeSimulation.IntakeSide.FRONT,
+                    // The intake can hold up to 1 note
+            1);
+    }
     public void intakeCoralStart() {
-        this.intakeSimulation = IntakeSimulation.OverTheBumperIntake(
-            // Specify the type of game pieces that the intake can collect
-            "Coral",
-            // Specify the drivetrain to which this intake is attached
-            driveSimulation,
-            // Width of the intake
-            Meters.of(0.4),
-            // The extension length of the intake beyond the robot's frame (when activated)
-            Meters.of(0.2),
-            // The intake is mounted on the back side of the chassis
-            IntakeSimulation.IntakeSide.FRONT,
-            // The intake can hold up to 1 note
-    1);
-    
+       // this.intakeSimulation = IntakeSimulation.OverTheBumperIntake(
+    //         // Specify the type of game pieces that the intake can collect
+    //         "Coral",
+    //         // Specify the drivetrain to which this intake is attached
+    //         driveSimulation,
+    //         // Width of the intake
+    //         Meters.of(0.4),
+    //         // The extension length of the intake beyond the robot's frame (when activated)
+    //         Meters.of(0.2),
+    //         // The intake is mounted on the back side of the chassis
+    //         IntakeSimulation.IntakeSide.FRONT,
+    //         // The intake can hold up to 1 note
+    // 1);
         this.intakeSimulation.startIntake();
     }
 
     public void intakeCoralStop() {
-        this.intakeSimulation = IntakeSimulation.OverTheBumperIntake(
-            // Specify the type of game pieces that the intake can collect
-            "Coral",
-            // Specify the drivetrain to which this intake is attached
-            driveSimulation,
-            // Width of the intake
-            Meters.of(0.4),
-            // The extension length of the intake beyond the robot's frame (when activated)
-            Meters.of(0.2),
-            // The intake is mounted on the back side of the chassis
-            IntakeSimulation.IntakeSide.FRONT,
-            // The intake can hold up to 1 note
-    1);
+    //     this.intakeSimulation = IntakeSimulation.OverTheBumperIntake(
+    //         // Specify the type of game pieces that the intake can collect
+    //         "Coral",
+    //         // Specify the drivetrain to which this intake is attached
+    //         driveSimulation,
+    //         // Width of the intake
+    //         Meters.of(0.4),
+    //         // The extension length of the intake beyond the robot's frame (when activated)
+    //         Meters.of(0.2),
+    //         // The intake is mounted on the back side of the chassis
+    //         IntakeSimulation.IntakeSide.FRONT,
+    //         // The intake can hold up to 1 note
+    // 1);
 
         this.intakeSimulation.stopIntake();
     }
-/*
-    public void intakeAlgae() {
-        this.intakeSimulation = IntakeSimulation.OverTheBumperIntake(
+
+    public void intakeAlgaeStart() {
+        this.algaeIntakeSimulation = IntakeSimulation.OverTheBumperIntake(
             // Specify the type of game pieces that the intake can collect
             "Algae",
             // Specify the drivetrain to which this intake is attached
@@ -413,13 +478,29 @@ public class Drive extends SubsystemBase implements Vision.VisionConsumer {
             // Width of the intake
             Meters.of(1),
             // The extension length of the intake beyond the robot's frame (when activated)
-            Meters.of(1),
+            Meters.of(0.5),
             // The intake is mounted on the back side of the chassis
-            IntakeSimulation.IntakeSide.FRONT,
+            IntakeSimulation.IntakeSide.BACK,
             // The intake can hold up to 1 note
     1);
 
-        this.intakeSimulation.startIntake();
+        this.algaeIntakeSimulation.startIntake();
     }
-*/
+    public void intakeAlgaeStop() {
+        this.algaeIntakeSimulation = IntakeSimulation.OverTheBumperIntake(
+            // Specify the type of game pieces that the intake can collect
+            "Algae",
+            // Specify the drivetrain to which this intake is attached
+            driveSimulation,
+            // Width of the intake
+            Meters.of(1),
+            // The extension length of the intake beyond the robot's frame (when activated)
+            Meters.of(0.5),
+            // The intake is mounted on the back side of the chassis
+            IntakeSimulation.IntakeSide.BACK,
+            // The intake can hold up to 1 note
+    1);
+
+        this.algaeIntakeSimulation.stopIntake();
+    }
 }

@@ -18,6 +18,13 @@ import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static frc.robot.subsystems.vision.VisionConstants.*;
 
+import java.awt.Font;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -33,11 +40,15 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.DriverStation.MatchType;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -47,6 +58,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.AlignWithLimelight;
 import frc.robot.commands.DriveCommands;
 import frc.robot.subsystems.drive.*;
 import frc.robot.subsystems.elevator.ElevatorSubsystem;
@@ -54,6 +66,7 @@ import frc.robot.subsystems.vision.*;
 import frc.robot.util.AIRobotInSimulation;
 
 import org.ironmaple.simulation.SimulatedArena;
+import org.ironmaple.simulation.IntakeSimulation.IntakeSide;
 import org.ironmaple.simulation.drivesims.SwerveDriveSimulation;
 import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnField;
 import org.ironmaple.simulation.seasonspecific.reefscape2025.ReefscapeAlgaeOnFly;
@@ -71,6 +84,7 @@ import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.Waypoint;
+import frc.robot.subsystems.elevator.L1SubsystemV2;
 import frc.robot.Constants.*;
 import frc.robot.subsystems.elevator.*;
 /**
@@ -88,8 +102,16 @@ public class RobotContainer {
     private final Boolean rotateMode = true;
 
     private final ElevatorSubsystem m_elevator = new ElevatorSubsystem();
+    private final L1SubsystemV2 m_L1Subsystem = new L1SubsystemV2();
+    
 
-
+    JFrame frame = new JFrame();
+    Timer gameTimer = new Timer();
+    enum gameState {
+        Autonomous,
+        Teleop
+    }
+    
     // Controller
     //private final XboxController controller = new XboxController(0);
     //private final Joystick controller = new Joystick(0);
@@ -101,7 +123,7 @@ public class RobotContainer {
     /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
         
-
+        
         
 
         switch (Constants.currentMode) {
@@ -148,7 +170,6 @@ public class RobotContainer {
                                 camera1Name, robotToCamera1, driveSimulation::getSimulatedDriveTrainPose));
 
                 AIRobotInSimulation.startOpponentRobotSimulations();
-
                 break;
             default:
                 // Replayed robot, disable IO implementations
@@ -165,7 +186,7 @@ public class RobotContainer {
         }
 
         SequentialCommandGroup score = new SequentialCommandGroup();
-        score.addCommands(new RunCommand(
+        score.addCommands(new InstantCommand(
                 () -> m_elevator.reachGoal(Constants.ElevatorConstants.kMaxElevatorHeightMeters),
                 m_elevator));
         score.addCommands(Commands.runOnce(drive::scoreCoral, drive));
@@ -184,7 +205,7 @@ public class RobotContainer {
         //NamedCommands.registerCommand("Lift the Elevator",(Commands.runOnce(drive::scoreCoral, drive)));
         //NamedCommands.registerCommand("Lower the Elevator",(Commands.runOnce(new WaitCommand(1))));
         NamedCommands.registerCommand("Dance", Commands.print("This will not be a command where the robot will spin around itself."));
-
+        
 
         // Use event markers as triggers
         new EventTrigger("Example Marker").onTrue(Commands.print("Passed an event marker"));
@@ -218,8 +239,74 @@ public class RobotContainer {
         SmartDashboard.putData("Reef 6 to station right", new PathPlannerAuto("Reef 6 to station right"));
         SmartDashboard.putData("Reef 6 to station left", new PathPlannerAuto("Reef 6 to station left"));
 
+        SmartDashboard.putData("Control Path", new PathPlannerAuto("Control Path"));
+        SmartDashboard.putData("Change in Rotation", new PathPlannerAuto("Change in Path"));
+        SmartDashboard.putData("Change in Path", new PathPlannerAuto("Control in Rotation"));
+
+        Command autoCountdown = new WaitCommand(999)
+        .until(() -> gameTimer.hasElapsed(15)&&DriverStationSim.getAutonomous())
+        .finallyDo(
+                ()->{
+                DriverStationSim.setAutonomous(false);
+                gameTimer.restart();
+        });
+        Command teleopCountdown = new WaitCommand(999)
+        .until(() -> gameTimer.hasElapsed(135)&&!DriverStationSim.getAutonomous())
+        .finallyDo(
+                ()->{
+                CommandScheduler.getInstance().cancelAll();
+                gameTimer.stop();
+        });
+        Command autoToTeleopCountdown = new WaitCommand(999)
+        .until(() -> gameTimer.hasElapsed(15)&&DriverStationSim.getAutonomous())
+        .finallyDo(
+                ()->{
+                DriverStationSim.setAutonomous(false);
+                gameTimer.restart();
+                teleopCountdown.schedule();
+        });
+        SmartDashboard.putData("Match Simulation - Start Autonomous", Commands.runOnce(
+                ()->{
+                        resetSimulationField();
+                        gameTimer.restart();
+                        DriverStationSim.setEnabled(true);
+                        DriverStationSim.setAutonomous(true);
+                        autoCountdown.schedule();
+                }
+        ));
+        SmartDashboard.putData("Match Simulation - Start Teleop", Commands.runOnce(
+                ()->{
+                        resetSimulationField();
+                        gameTimer.restart();
+                        DriverStationSim.setEnabled(true);
+                        DriverStationSim.setAutonomous(false);
+                        teleopCountdown.schedule();
+                }
+        ));
+        SmartDashboard.putData("Match Simulation - Start Match", Commands.runOnce(
+                ()->{
+                        resetSimulationField();
+                        gameTimer.restart();
+                        DriverStationSim.setEnabled(true);
+                        DriverStationSim.setAutonomous(true);
+                        autoToTeleopCountdown.schedule();
+                }
+        ));
+        SmartDashboard.putData("Match Simulation - Stop Match", Commands.runOnce(
+                ()->{
+                        CommandScheduler.getInstance().cancelAll();
+                        gameTimer.stop();
+                }
+        ));
+        Command align = new AlignWithLimelight(drive, vision, LimelightConstants.reefAlignSide.Left);
+        SmartDashboard.putData("Align With Limelight", align);
+        //SmartDashboard.putData("Align With Limelight", new RunCommand(()->new AlignWithLimelight(drive, vision, LimelightConstants.reefAlignSide.Left)));
         // Configure the button bindings
         configureButtonBindings();
+        setFrame();
+
+        //gameTimer.reset();
+        drive.initalizeIntake();
     }
 
     /**
@@ -352,6 +439,108 @@ public class RobotContainer {
                     .onTrue(Commands.runOnce(resetGyro, drive).ignoringDisable(true));
         }
     }
+    public void setFrame(){
+        JLabel label = new JLabel("No input");
+        label.setFont(new Font("Arial",Font.BOLD, 30));
+        frame.setTitle("My JFrame Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 300);
+        frame.add(label);
+        frame.setVisible(true);
+        frame.addKeyListener(
+                new KeyListener() {
+                        int prevKey;
+                        @Override
+                        public void keyPressed(KeyEvent e){
+                                switch (e.getKeyCode()){
+                                        case KeyEvent.VK_W:
+                                        DriveCommands.joystickDrive(drive, () -> 0, () -> -1, () -> 0).schedule();
+                                        break;
+                                        case KeyEvent.VK_S:
+                                        DriveCommands.joystickDrive(drive, () -> 0, () -> 1, () -> 0).schedule();
+                                        break;
+                                        case KeyEvent.VK_A:
+                                        DriveCommands.joystickDrive(drive, () -> 1, () -> 0, () -> 0).schedule();
+                                        break;
+                                        case KeyEvent.VK_D:
+                                        DriveCommands.joystickDrive(drive, () -> -1, () -> 0, () -> 0).schedule();
+                                        break;
+                                        case KeyEvent.VK_LEFT:
+                                        DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 1).schedule();
+                                        break;
+                                        case KeyEvent.VK_RIGHT:
+                                        DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> -1).schedule();
+                                        break;
+                                        case KeyEvent.VK_E:
+                                        if (prevKey!=KeyEvent.VK_E){
+                                                Commands.runOnce(drive::scoreAlgae,drive).schedule();
+                                        }
+                                        break;
+                                        case KeyEvent.VK_R:
+                                        if (prevKey!=KeyEvent.VK_R){
+                                                Commands.runOnce(drive::scoreCoral,drive).schedule();
+                                        }
+                                        break;
+
+                                        // case KeyEvent.VK_J:
+                                        //         m_L1Subsystem.setL1Goal(Constants.L1Constants.scorePosition).schedule();
+                                        // break;
+                                        // case KeyEvent.VK_K:
+                                        //         m_L1Subsystem.setL1Goal(Constants.L1Constants.stowPosition).schedule();
+                                        //         //This seems weird putting L1 mechanism as m_elevator, but I do this because it's part of elevator subsystem.
+                                        //         //I'm not sure if there is a way of seperating the names while keeping them in the same subsystem. 
+                                        // break;
+                                        // case KeyEvent.VK_L:
+                                        //         m_L1Subsystem.setL1Goal(Constants.L1Constants.l4ScorePosition).schedule();
+                                        // break;
+                                        
+                                        case KeyEvent.VK_U:
+                                                m_elevator.setGoal(Constants.ElevatorConstants.kMaxElevatorHeightMeters).schedule();
+                                        break;
+                                        case KeyEvent.VK_I:
+                                                m_elevator.setGoal(Constants.ElevatorConstants.kMinElevatorHeightMeters).schedule();
+                                        break;
+                                        case KeyEvent.VK_J:
+                                                drive.spawnOnIntake(IntakeConstants.Side.BLUE, IntakeConstants.Side.BLUE);
+                                                drive.spawnOnIntake(IntakeConstants.Side.BLUE, IntakeConstants.Side.RED);
+                                                drive.spawnOnIntake(IntakeConstants.Side.RED, IntakeConstants.Side.BLUE);
+                                                drive.spawnOnIntake(IntakeConstants.Side.RED, IntakeConstants.Side.RED);
+                                        break;
+                                        case KeyEvent.VK_L:
+                                                drive.intakeCoralStop();
+                                        break;
+                                        case KeyEvent.VK_K:
+                                                drive.intakeCoralStart();
+                                        break;
+                                        case KeyEvent.VK_SEMICOLON:
+                                                drive.intakeAlgaeStart();
+                                        break;
+                                        case KeyEvent.VK_QUOTE:
+                                                drive.intakeAlgaeStop();
+                                        break;
+                                        // case KeyEvent.VK_OPEN_BRACKET:
+                                        //         gameTimer.start();
+                                        // break;
+                                        // case KeyEvent.VK_CLOSE_BRACKET:
+                                        //         gameTimer.reset();
+                                
+                                }
+                                label.setText(KeyEvent.getKeyText(e.getKeyCode()));
+                                prevKey = e.getKeyCode();
+                        }
+                        @Override
+                        public void keyReleased(KeyEvent e){
+
+                                DriveCommands.joystickDrive(drive, () -> 0, () -> 0, () -> 0).schedule();
+                                
+                        }
+                        @Override
+                        public void keyTyped(KeyEvent e){
+
+                        }
+                }
+        );
+    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -381,5 +570,8 @@ public class RobotContainer {
         Logger.recordOutput("FieldSimulation/OpponentRobotPositions", AIRobotInSimulation.getOpponentRobotPoses());
         Logger.recordOutput(
                 "FieldSimulation/AlliancePartnerRobotPositions", AIRobotInSimulation.getAlliancePartnerRobotPoses());
+        Logger.recordOutput(
+        "Match Time"
+        , gameTimer.get());
     }
 }
