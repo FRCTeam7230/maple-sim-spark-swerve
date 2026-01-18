@@ -19,8 +19,6 @@ Simulation of real physics using maple-sim. Code is based on [AdvantageKit Spark
 12. Then keep the folder for assets in mind and drag maple-sim-spark-swerve/assets/Robot_Team7230 folder into the assets folder.
 13. Then right click the icon for the robot position and now you should be able to see Team7230 as a robot.
 
-> Pray hard because this thing is held together by Mr.Tang, hopes, and dreams.
-> If doesn't work then debug for like 5 hours or something, good luck from 11:04PM 2025
 # Images for guide
 ## For step 3
 <img width="156" height="84" alt="image" src="https://github.com/user-attachments/assets/5c0e7e18-63ed-4863-95ca-570b745c75ca" />
